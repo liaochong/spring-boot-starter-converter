@@ -22,5 +22,4 @@ public class ConversionContext {
         this.beConvertedClass = beConvertedClass;
         this.convertResultClass = convertResultClass;
     }
-
 }
