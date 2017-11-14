@@ -19,27 +19,16 @@ public class BeanConverter {
 
     private static final int MAX_CONVERT_SIZE = 1000;
 
-    private Map<ConversionContext, Handler> actionMap;
+    private static Map<ConversionContext, Handler> actionMap;
 
     /**
-     * 转换
+     * 初始化操作map
      *
-     * @param convertedObj 被转换对象
-     * @param clz          需要转换到的类型
-     * @param <E>          转换后的类型
-     * @param <T>          转换前的类型
-     * @return 结果
+     * @param scanPackageName
      */
-    public <E, T> E convert(T convertedObj, Class<E> clz) {
+    public static void initActionMap(String scanPackageName) {
         if (MapUtils.isEmpty(actionMap)) {
-            return null;
-        }
-        ConversionContext conversionContext = new ConversionContext(convertedObj.getClass(), clz);
-        Handler handler = actionMap.get(conversionContext);
-        try {
-            return clz.cast(handler.getMethod().invoke(null, convertedObj));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            actionMap = ConverterCollector.getActionMap(scanPackageName);
         }
     }
 
@@ -52,14 +41,36 @@ public class BeanConverter {
      * @param <T>  转换前的类型
      * @return 结果
      */
-    public <E, T> List<E> convert(List<T> data, Class<E> clz) {
+    public static <E, T> List<E> convert(List<T> data, Class<E> clz) {
         if (CollectionUtils.isEmpty(data)) {
             return Collections.emptyList();
         }
         if (data.size() > MAX_CONVERT_SIZE) {
-            return data.parallelStream().map(convertedObj -> this.convert(convertedObj, clz)).collect(Collectors.toList());
+            return data.parallelStream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
         } else {
-            return data.stream().map(convertedObj -> this.convert(convertedObj, clz)).collect(Collectors.toList());
+            return data.stream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * 转换
+     *
+     * @param convertedObj 被转换对象
+     * @param clz          需要转换到的类型
+     * @param <E>          转换后的类型
+     * @param <T>          转换前的类型
+     * @return 结果
+     */
+    public static <E, T> E convert(T convertedObj, Class<E> clz) {
+        if (MapUtils.isEmpty(actionMap)) {
+            return null;
+        }
+        ConversionContext conversionContext = new ConversionContext(convertedObj.getClass(), clz);
+        Handler handler = actionMap.get(conversionContext);
+        try {
+            return clz.cast(handler.getMethod().invoke(null, convertedObj));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
