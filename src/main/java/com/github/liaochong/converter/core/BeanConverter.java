@@ -11,7 +11,7 @@ import lombok.Data;
  * @version V1.0
  */
 @Data
-public class Converter {
+public class BeanConverter {
 
     private Map<ConversionContext, Handler> actionMap;
 

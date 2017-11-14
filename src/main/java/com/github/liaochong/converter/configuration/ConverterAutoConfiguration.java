@@ -9,8 +9,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.github.liaochong.converter.annoation.Converter;
+import com.github.liaochong.converter.core.BeanConverter;
 import com.github.liaochong.converter.core.ConversionContext;
-import com.github.liaochong.converter.core.Converter;
 import com.github.liaochong.converter.core.ConverterCollector;
 import com.github.liaochong.converter.core.Handler;
 
@@ -23,20 +24,20 @@ import com.github.liaochong.converter.core.Handler;
  */
 @Configuration
 @EnableConfigurationProperties(ConversionProperties.class)
-@ConditionalOnClass(com.github.liaochong.converter.annoation.Converter.class)
+@ConditionalOnClass(Converter.class)
 public class ConverterAutoConfiguration {
 
     @Resource
     private ConversionProperties conversionProperties;
 
     @Bean
-    public Converter getConverter() {
+    public BeanConverter getConverter() {
         //获取扫描路径
         String scanPackageName = conversionProperties.getScanPackageName();
         Map<ConversionContext, Handler> actionMap = ConverterCollector.getActionMap(scanPackageName);
 
-        Converter converter = new Converter();
-        converter.setActionMap(actionMap);
-        return converter;
+        BeanConverter beanConverter = new BeanConverter();
+        beanConverter.setActionMap(actionMap);
+        return beanConverter;
     }
 }
