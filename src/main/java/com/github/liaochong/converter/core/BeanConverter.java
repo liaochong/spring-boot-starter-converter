@@ -1,7 +1,11 @@
 package com.github.liaochong.converter.core;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 
 import lombok.Data;
@@ -12,6 +16,8 @@ import lombok.Data;
  */
 @Data
 public class BeanConverter {
+
+    private static final int MAX_CONVERT_SIZE = 1000;
 
     private Map<ConversionContext, Handler> actionMap;
 
@@ -34,6 +40,26 @@ public class BeanConverter {
             return clz.cast(handler.getMethod().invoke(null, convertedObj));
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 集合转换
+     *
+     * @param data 需要转换的集合
+     * @param clz  需要转换到的类型
+     * @param <E>  转换后的类型
+     * @param <T>  转换前的类型
+     * @return 结果
+     */
+    public <E, T> List<E> convert(List<T> data, Class<E> clz) {
+        if (CollectionUtils.isEmpty(data)) {
+            return Collections.emptyList();
+        }
+        if (data.size() > MAX_CONVERT_SIZE) {
+            return data.parallelStream().map(convertedObj -> this.convert(convertedObj, clz)).collect(Collectors.toList());
+        } else {
+            return data.stream().map(convertedObj -> this.convert(convertedObj, clz)).collect(Collectors.toList());
         }
     }
 }
