@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @ConfigurationProperties(prefix = "conversion")
-public class ConversionProperties {
+public class ConverterProperties {
 
     @NotBlank
     String scanPackageName;

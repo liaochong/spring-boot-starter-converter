@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.liaochong.converter.annoation.Converter;
-import com.github.liaochong.converter.core.BeanConverter;
 
 
 /**
@@ -18,18 +17,17 @@ import com.github.liaochong.converter.core.BeanConverter;
  * @version V1.0
  */
 @Configuration
-@EnableConfigurationProperties(ConversionProperties.class)
+@EnableConfigurationProperties(ConverterProperties.class)
 @ConditionalOnClass(Converter.class)
 public class ConverterAutoConfiguration {
 
     @Resource
-    private ConversionProperties conversionProperties;
+    private ConverterProperties converterProperties;
 
     @Bean
-    public BeanConverter getConverter() {
+    public ConverterStartListener getConverter() {
         //获取扫描路径
-        String scanPackageName = conversionProperties.getScanPackageName();
-        BeanConverter.initActionMap(scanPackageName);
-        return new BeanConverter();
+        String scanPackageName = converterProperties.getScanPackageName();
+        return new ConverterStartListener(scanPackageName);
     }
 }
