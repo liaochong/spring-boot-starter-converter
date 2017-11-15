@@ -17,14 +17,12 @@ import lombok.Data;
 @Data
 public class BeanConverter {
 
-    private static final int MAX_CONVERT_SIZE = 1000;
-
     private static Map<ConversionContext, Handler> actionMap;
 
     /**
      * 初始化操作map
      *
-     * @param scanPackageName
+     * @param scanPackageName 扫描包名称
      */
     public static void initActionMap(String scanPackageName) {
         if (MapUtils.isEmpty(actionMap)) {
@@ -36,29 +34,25 @@ public class BeanConverter {
      * 集合转换
      *
      * @param data 需要转换的集合
-     * @param clz  需要转换到的类型
-     * @param <E>  转换后的类型
-     * @param <T>  转换前的类型
+     * @param clz 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
      * @return 结果
      */
     public static <E, T> List<E> convert(List<T> data, Class<E> clz) {
         if (CollectionUtils.isEmpty(data)) {
             return Collections.emptyList();
         }
-        if (data.size() > MAX_CONVERT_SIZE) {
-            return data.parallelStream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
-        } else {
-            return data.stream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
-        }
+        return data.stream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
     }
 
     /**
      * 转换
      *
      * @param convertedObj 被转换对象
-     * @param clz          需要转换到的类型
-     * @param <E>          转换后的类型
-     * @param <T>          转换前的类型
+     * @param clz 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
      * @return 结果
      */
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
