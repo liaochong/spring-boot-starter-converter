@@ -62,7 +62,7 @@ public class BeanConverter {
         ConversionContext conversionContext = new ConversionContext(convertedObj.getClass(), clz);
         Handler handler = actionMap.get(conversionContext);
         try {
-            return clz.cast(handler.getMethod().invoke(null, convertedObj));
+            return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

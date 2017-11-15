@@ -42,7 +42,7 @@ class ConverterCollector {
                 Class<?>[] paramTypes = method.getParameterTypes();
                 Class<?> returnType = method.getReturnType();
                 ConversionContext conversionContext = new ConversionContext(paramTypes[0], returnType);
-                Handler handler = new Handler(clz, method);
+                Handler handler = Handler.staticHandler(method);
                 result.put(conversionContext, handler);
             });
         });
