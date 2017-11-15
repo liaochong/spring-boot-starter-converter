@@ -4,10 +4,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections4.MapUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import com.github.liaochong.converter.annoation.Converter;
+import com.github.liaochong.converter.annoation.EnableConverter;
 import com.github.liaochong.converter.core.context.ConversionContext;
 
 /**
@@ -26,8 +29,12 @@ public class ConverterStartListener implements ApplicationListener<ContextRefres
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Map<String, Object> converterBeans = contextRefreshedEvent.getApplicationContext()
-                .getBeansWithAnnotation(Converter.class);
+        ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
+        Map<String, Object> enableMap = applicationContext.getBeansWithAnnotation(EnableConverter.class);
+        if (MapUtils.isEmpty(enableMap)) {
+            return;
+        }
+        Map<String, Object> converterBeans = applicationContext.getBeansWithAnnotation(Converter.class);
         ConversionContext.initialize(converterProperties.getScanPackageName(), converterBeans);
     }
 }

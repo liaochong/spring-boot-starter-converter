@@ -47,6 +47,9 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
+        if (ConversionContext.isDisable()) {
+            throw ConvertException.of("未开启@EnableConverter");
+        }
         Map<Condition, Handler> actionMap = ConversionContext.getActionMap();
         if (MapUtils.isEmpty(actionMap)) {
             throw ConvertException.of("未找到任何拥有@Converter注解的转换对象");

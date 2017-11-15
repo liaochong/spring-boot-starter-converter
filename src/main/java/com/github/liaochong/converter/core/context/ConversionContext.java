@@ -30,6 +30,17 @@ public class ConversionContext {
 
     private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
 
+    private static boolean enableConverter = false;
+
+    /**
+     * 是否允许转换
+     * 
+     * @return true/false
+     */
+    public static boolean isDisable() {
+        return !enableConverter;
+    }
+
     /**
      * 初始化上下文环境
      * 
@@ -38,6 +49,7 @@ public class ConversionContext {
      */
     public static void initialize(String scanPackageName, Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(ACTION_MAP)) {
+            enableConverter = true;
             initStaticActionMap(scanPackageName);
             initNonStaticActionMap(converterBeans);
         }
