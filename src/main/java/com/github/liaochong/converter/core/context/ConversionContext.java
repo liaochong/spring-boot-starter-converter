@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.util.ReflectionUtils;
 
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
@@ -78,7 +78,7 @@ public class ConversionContext {
             return;
         }
         Stream<Object> objectStream = converterBeans.values().parallelStream();
-        objectStream.forEach(bean -> packagingAction(ReflectionUtils.getAllDeclaredMethods(bean.getClass()), bean));
+        objectStream.forEach(bean -> packagingAction(bean.getClass().getDeclaredMethods(), bean));
     }
 
     /**
@@ -102,6 +102,9 @@ public class ConversionContext {
      * @param handlerBean 处理者
      */
     private static void packagingAction(Method[] methods, Object handlerBean) {
+        if (ArrayUtils.isEmpty(methods)) {
+            return;
+        }
         // 参数唯一，且为public
         Predicate<Method> commonFilter = method -> method.getParameterCount() == NumberUtils.INTEGER_ONE
                 && Modifier.isPublic(method.getModifiers());
