@@ -25,10 +25,11 @@ public class Handler {
     /**
      * 静态工厂方法
      * 
-     * @param method 转换方法
-     * @return
+     * @param handler 处理者
+     * @param method 处理方法
+     * @return Handler
      */
-    public static Handler staticHandler(Method method) {
-        return new Handler(null, method);
+    public static Handler newHandler(Object handler, Method method) {
+        return new Handler(handler, method);
     }
 }

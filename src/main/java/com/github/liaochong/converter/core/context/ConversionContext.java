@@ -5,12 +5,16 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.util.ReflectionUtils;
 
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
@@ -24,42 +28,45 @@ import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
  */
 public class ConversionContext {
 
-    private static Map<Condition, Handler> actionMap;
+    private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
 
     /**
      * 初始化上下文环境
      * 
      * @param scanPackageName 扫描包名称
+     * @param converterBeans spring扫描到的bean
      */
-    public static void initialize(String scanPackageName) {
-        if (MapUtils.isEmpty(actionMap)) {
-            actionMap = getActionMap(scanPackageName);
+    public static void initialize(String scanPackageName, Map<String, Object> converterBeans) {
+        if (MapUtils.isEmpty(ACTION_MAP)) {
+            initStaticActionMap(scanPackageName);
+            initNonStaticActionMap(converterBeans);
         }
     }
 
     /**
-     * 获取操作集合
+     * 初始化静态操作集合
      *
      * @param scanPackageName 扫描路径
-     * @return Map
      */
-    private static Map<Condition, Handler> getActionMap(String scanPackageName) {
+    private static void initStaticActionMap(String scanPackageName) {
         Set<Class<?>> set = collectConverter(scanPackageName);
-        Map<Condition, Handler> result = MapBuilder.concurrentHashMap();
-        set.parallelStream().forEach(clz -> {
-            Method[] methods = clz.getDeclaredMethods();
-            // 参数唯一，且为public static方法
-            Predicate<Method> predicate = method -> method.getParameterCount() == 1
-                    && Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers());
-            Arrays.stream(methods).filter(predicate).forEach(method -> {
-                Class<?>[] paramTypes = method.getParameterTypes();
-                Class<?> returnType = method.getReturnType();
-                Condition condition = new Condition(paramTypes[0], returnType);
-                Handler handler = Handler.staticHandler(method);
-                result.put(condition, handler);
-            });
-        });
-        return result;
+        if (CollectionUtils.isEmpty(set)) {
+            return;
+        }
+        set.parallelStream().forEach(clz -> packagingAction(clz.getDeclaredMethods(), null));
+    }
+
+    /**
+     * 初始化非静态操作集合
+     * 
+     * @param converterBeans 转换对象
+     */
+    private static void initNonStaticActionMap(Map<String, Object> converterBeans) {
+        if (MapUtils.isEmpty(converterBeans)) {
+            return;
+        }
+        Stream<Object> objectStream = converterBeans.values().parallelStream();
+        objectStream.forEach(bean -> packagingAction(ReflectionUtils.getAllDeclaredMethods(bean.getClass()), bean));
     }
 
     /**
@@ -76,8 +83,36 @@ public class ConversionContext {
         return set.parallelStream().filter(predicate).collect(Collectors.toSet());
     }
 
+    /**
+     * 包装action
+     * 
+     * @param methods 方法
+     * @param handlerBean 处理者
+     */
+    private static void packagingAction(Method[] methods, Object handlerBean) {
+        // 参数唯一，且为public
+        Predicate<Method> commonFilter = method -> method.getParameterCount() == NumberUtils.INTEGER_ONE
+                && Modifier.isPublic(method.getModifiers());
+
+        Predicate<Method> staticFilter = method -> Objects.isNull(handlerBean) == Modifier
+                .isStatic(method.getModifiers());
+
+        Arrays.stream(methods).filter(commonFilter).filter(staticFilter).forEach(method -> {
+            Class<?>[] paramTypes = method.getParameterTypes();
+            Class<?> returnType = method.getReturnType();
+            Condition condition = new Condition(paramTypes[NumberUtils.INTEGER_ZERO], returnType);
+            Handler handler = Handler.newHandler(handlerBean, method);
+            ACTION_MAP.put(condition, handler);
+        });
+    }
+
+    /**
+     * 获取actionMap
+     * 
+     * @return Map
+     */
     public static Map<Condition, Handler> getActionMap() {
-        return actionMap;
+        return ACTION_MAP;
     }
 
 }

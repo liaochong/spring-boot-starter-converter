@@ -11,6 +11,7 @@ import org.apache.commons.collections4.MapUtils;
 import com.github.liaochong.converter.core.context.Condition;
 import com.github.liaochong.converter.core.context.ConversionContext;
 import com.github.liaochong.converter.core.context.Handler;
+import com.github.liaochong.converter.exception.ConvertException;
 import lombok.Data;
 
 /**
@@ -48,7 +49,7 @@ public class BeanConverter {
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
         Map<Condition, Handler> actionMap = ConversionContext.getActionMap();
         if (MapUtils.isEmpty(actionMap)) {
-            return null;
+            throw ConvertException.of("未找到任何拥有@Converter注解的转换对象");
         }
         Condition condition = new Condition(convertedObj.getClass(), clz);
         Handler handler = actionMap.get(condition);

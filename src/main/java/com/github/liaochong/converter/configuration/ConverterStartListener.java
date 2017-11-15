@@ -1,10 +1,13 @@
 package com.github.liaochong.converter.configuration;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.converter.core.context.ConversionContext;
 
 /**
@@ -23,6 +26,8 @@ public class ConverterStartListener implements ApplicationListener<ContextRefres
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        ConversionContext.initialize(converterProperties.getScanPackageName());
+        Map<String, Object> converterBeans = contextRefreshedEvent.getApplicationContext()
+                .getBeansWithAnnotation(Converter.class);
+        ConversionContext.initialize(converterProperties.getScanPackageName(), converterBeans);
     }
 }
