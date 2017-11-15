@@ -1,4 +1,4 @@
-package com.github.liaochong.converter.core;
+package com.github.liaochong.converter.core.context;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -6,23 +6,36 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
 
 /**
- * 转换类收集器
- * 
+ * 转换上下文
+ *
  * @author liaochong
  * @version V1.0
  */
-class ConverterCollector {
+public class ConversionContext {
+
+    private static Map<Condition, Handler> actionMap;
+
+    /**
+     * 初始化上下文环境
+     * 
+     * @param scanPackageName 扫描包名称
+     */
+    public static void initialize(String scanPackageName) {
+        if (MapUtils.isEmpty(actionMap)) {
+            actionMap = getActionMap(scanPackageName);
+        }
+    }
 
     /**
      * 获取操作集合
@@ -30,9 +43,9 @@ class ConverterCollector {
      * @param scanPackageName 扫描路径
      * @return Map
      */
-    static Map<ConversionContext, Handler> getActionMap(String scanPackageName) {
+    private static Map<Condition, Handler> getActionMap(String scanPackageName) {
         Set<Class<?>> set = collectConverter(scanPackageName);
-        ConcurrentHashMap<ConversionContext, Handler> result = MapBuilder.concurrentHashMap();
+        Map<Condition, Handler> result = MapBuilder.concurrentHashMap();
         set.parallelStream().forEach(clz -> {
             Method[] methods = clz.getDeclaredMethods();
             // 参数唯一，且为public static方法
@@ -41,9 +54,9 @@ class ConverterCollector {
             Arrays.stream(methods).filter(predicate).forEach(method -> {
                 Class<?>[] paramTypes = method.getParameterTypes();
                 Class<?> returnType = method.getReturnType();
-                ConversionContext conversionContext = new ConversionContext(paramTypes[0], returnType);
+                Condition condition = new Condition(paramTypes[0], returnType);
                 Handler handler = Handler.staticHandler(method);
-                result.put(conversionContext, handler);
+                result.put(condition, handler);
             });
         });
         return result;
@@ -62,4 +75,9 @@ class ConverterCollector {
         Predicate<Class<?>> predicate = clazz -> clazz.isAnnotationPresent(Converter.class);
         return set.parallelStream().filter(predicate).collect(Collectors.toSet());
     }
+
+    public static Map<Condition, Handler> getActionMap() {
+        return actionMap;
+    }
+
 }

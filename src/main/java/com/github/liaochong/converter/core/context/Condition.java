@@ -1,24 +1,22 @@
-package com.github.liaochong.converter.core;
+package com.github.liaochong.converter.core.context;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 /**
- * 转换上下文
- *
  * @author liaochong
  * @version V1.0
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ConversionContext {
+public class Condition {
 
     Class<?> beConvertedClass;
 
     Class<?> convertResultClass;
 
-    public ConversionContext(Class<?> beConvertedClass, Class<?> convertResultClass) {
+    public Condition(Class<?> beConvertedClass, Class<?> convertResultClass) {
         this.beConvertedClass = beConvertedClass;
         this.convertResultClass = convertResultClass;
     }

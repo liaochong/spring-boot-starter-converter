@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 
+import com.github.liaochong.converter.core.context.Condition;
+import com.github.liaochong.converter.core.context.ConversionContext;
+import com.github.liaochong.converter.core.context.Handler;
 import lombok.Data;
 
 /**
@@ -16,19 +19,6 @@ import lombok.Data;
  */
 @Data
 public class BeanConverter {
-
-    private static Map<ConversionContext, Handler> actionMap;
-
-    /**
-     * 初始化操作map
-     *
-     * @param scanPackageName 扫描包名称
-     */
-    public static void initActionMap(String scanPackageName) {
-        if (MapUtils.isEmpty(actionMap)) {
-            actionMap = ConverterCollector.getActionMap(scanPackageName);
-        }
-    }
 
     /**
      * 集合转换
@@ -56,11 +46,12 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
+        Map<Condition, Handler> actionMap = ConversionContext.getActionMap();
         if (MapUtils.isEmpty(actionMap)) {
             return null;
         }
-        ConversionContext conversionContext = new ConversionContext(convertedObj.getClass(), clz);
-        Handler handler = actionMap.get(conversionContext);
+        Condition condition = new Condition(convertedObj.getClass(), clz);
+        Handler handler = actionMap.get(condition);
         try {
             return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));
         } catch (Exception e) {

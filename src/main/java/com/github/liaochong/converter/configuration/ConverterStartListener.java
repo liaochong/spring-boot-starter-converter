@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import com.github.liaochong.converter.core.BeanConverter;
+import com.github.liaochong.converter.core.context.ConversionContext;
 
 /**
  * 启动监听器
@@ -23,6 +23,6 @@ public class ConverterStartListener implements ApplicationListener<ContextRefres
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        BeanConverter.initActionMap(converterProperties.getScanPackageName());
+        ConversionContext.initialize(converterProperties.getScanPackageName());
     }
 }
