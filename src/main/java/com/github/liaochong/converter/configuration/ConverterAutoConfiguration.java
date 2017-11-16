@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.liaochong.converter.annoation.Converter;
-import com.github.liaochong.converter.annoation.EnableConverter;
 
 /**
  * 自动配置
@@ -16,7 +15,7 @@ import com.github.liaochong.converter.annoation.EnableConverter;
  */
 @Configuration
 @EnableConfigurationProperties(ConverterProperties.class)
-@ConditionalOnClass({ Converter.class, EnableConverter.class })
+@ConditionalOnClass({ Converter.class })
 public class ConverterAutoConfiguration {
 
     @Bean
