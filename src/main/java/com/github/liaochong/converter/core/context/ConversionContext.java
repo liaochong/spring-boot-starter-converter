@@ -140,9 +140,9 @@ public class ConversionContext {
 
         Handler existHandler = ACTION_MAP.get(condition);
         if (Objects.nonNull(existHandler)) {
-            String message = "class-one：" + method.getDeclaringClass().getName() + "_method-one：" + method.getName()
-                    + "-class-two：" + existHandler.getMethod().getDeclaringClass().getName() + "_method-two："
-                    + existHandler.getMethod().getName() + "存在转换源、目标相同";
+            String message = "\n{method：" + method.getDeclaringClass().getName() + "." + method.getName()
+                    + "}\n{method：" + existHandler.getMethod().getDeclaringClass().getName() + "."
+                    + existHandler.getMethod().getName() + "} 转换源、目标相同";
             throw NonUniqueConverterException.of(message);
         }
 
