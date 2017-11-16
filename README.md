@@ -46,5 +46,14 @@ public class UserConverter{
 
 ```java
 UserDO userDO = new UserDO();
-UserBO user=BeanConverter.convert( userDO , UserBO.class );
+UserBO user = BeanConverter.convert(userDO , UserBO.class);
+```
+```java
+List<UserDO> list = new ArrayList<>();
+UserDO userDO1 = new UserDO();
+UserDO userDO2 = new UserDO();
+list.add(userDO1);
+list.add(userDO2);
+
+List<UserBO> users = BeanConverter.convert(list , UserBO.class);
 ```
