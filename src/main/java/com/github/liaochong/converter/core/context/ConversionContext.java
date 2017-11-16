@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.github.liaochong.converter.annoation.Converter;
+import com.github.liaochong.converter.exception.NonUniqueConverterException;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
 
@@ -137,6 +138,10 @@ public class ConversionContext {
         Class<?> returnType = method.getReturnType();
         Condition condition = Condition.newInstance(paramTypes[0], returnType);
         Handler handler = Handler.newInstance(handlerBean, method);
+        if (ACTION_MAP.containsKey(condition)) {
+            throw NonUniqueConverterException
+                    .of("转换源：" + paramTypes[0].getName() + "，转换目标：" + returnType.getName() + "存在重复转换方法");
+        }
         ACTION_MAP.put(condition, handler);
     }
 
