@@ -1,6 +1,7 @@
 package com.github.liaochong.converter.configuration;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Set;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
@@ -10,11 +11,11 @@ import lombok.Data;
  * @version V1.0
  */
 @Data
-@ConfigurationProperties(prefix = "conversion")
+@ConfigurationProperties(prefix = "bean.conversion")
 class ConverterProperties {
 
     /**
-     * 默认全局扫描
+     * 若不填，默认全局扫描
      */
-    String scanPackageName = StringUtils.EMPTY;
+    Set<String> scanPackages;
 }

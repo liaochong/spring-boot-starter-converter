@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -47,14 +48,14 @@ public class ConversionContext {
     /**
      * 初始化上下文环境
      * 
-     * @param scanPackageName 扫描包名称
+     * @param scanPackages 扫描包集合
      * @param converterBeans spring扫描到的bean
      */
-    public static void initialize(String scanPackageName, Map<String, Object> converterBeans) {
+    public static void initialize(Set<String> scanPackages, Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(ACTION_MAP)) {
             LOG.info("start initialize conversion environment");
             enableConverter = true;
-            initStaticActionMap(scanPackageName);
+            initStaticActionMap(scanPackages);
             initNonStaticActionMap(converterBeans);
             LOG.info("conversion environment initialization completed");
         }
@@ -63,10 +64,17 @@ public class ConversionContext {
     /**
      * 初始化静态操作集合
      *
-     * @param scanPackageName 扫描路径
+     * @param scanPackages 扫描路径集合
      */
-    private static void initStaticActionMap(String scanPackageName) {
-        Set<Class<?>> set = collectConverterClass(scanPackageName);
+    private static void initStaticActionMap(Set<String> scanPackages) {
+        Set<Class<?>> set;
+        if (CollectionUtils.isEmpty(scanPackages)) {
+            set = collectConverterClass(StringUtils.EMPTY);
+        } else {
+            set = scanPackages.parallelStream()
+                    .flatMap(scanPackage -> ConversionContext.collectConverterClass(scanPackage).stream())
+                    .collect(Collectors.toSet());
+        }
         if (CollectionUtils.isEmpty(set)) {
             return;
         }

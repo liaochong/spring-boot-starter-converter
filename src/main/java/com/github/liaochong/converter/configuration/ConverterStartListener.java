@@ -29,6 +29,6 @@ public class ConverterStartListener implements ApplicationListener<ContextRefres
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, Object> converterBeans = applicationContext.getBeansWithAnnotation(Converter.class);
-        ConversionContext.initialize(converterProperties.getScanPackageName(), converterBeans);
+        ConversionContext.initialize(converterProperties.getScanPackages(), converterBeans);
     }
 }
