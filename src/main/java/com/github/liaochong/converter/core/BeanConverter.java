@@ -54,7 +54,7 @@ public class BeanConverter {
         if (MapUtils.isEmpty(actionMap)) {
             throw ConvertException.of("未找到任何拥有@Converter注解的转换对象");
         }
-        Condition condition = new Condition(convertedObj.getClass(), clz);
+        Condition condition = Condition.newInstance(convertedObj.getClass(), clz);
         Handler handler = actionMap.get(condition);
         try {
             return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));

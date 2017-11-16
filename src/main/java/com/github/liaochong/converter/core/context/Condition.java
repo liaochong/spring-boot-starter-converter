@@ -12,12 +12,23 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Condition {
 
-    Class<?> beConvertedClass;
+    Class<?> sourceClass;
 
-    Class<?> convertResultClass;
+    Class<?> targetClass;
 
-    public Condition(Class<?> beConvertedClass, Class<?> convertResultClass) {
-        this.beConvertedClass = beConvertedClass;
-        this.convertResultClass = convertResultClass;
+    private Condition(Class<?> sourceClass, Class<?> targetClass) {
+        this.sourceClass = sourceClass;
+        this.targetClass = targetClass;
+    }
+
+    /**
+     * 静态工厂方法
+     * 
+     * @param sourceClass 源类
+     * @param targetClass 目标类
+     * @return Condition
+     */
+    public static Condition newInstance(Class<?> sourceClass, Class<?> targetClass) {
+        return new Condition(sourceClass, targetClass);
     }
 }
