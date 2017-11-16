@@ -83,9 +83,9 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ```
 配置 | Configuration
 --------------------
-1. 设置spring-boot-starter-converter的扫描路径：在application.properties中设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，若不设置，默认全局扫描
+1. 设置spring-boot-starter-converter的扫描路径：在application.properties中设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，若不设置，`默认全局扫描`；
 
 异常 | Exception
 -------------------
-1. NonUniqueConverterException：非唯一转换方法异常，该异常出现在发现 `多个转换方法转换同一类型对象到同一目标对象`的情况
-2. ConvertException：转换异常
+1. NonUniqueConverterException：非唯一转换方法异常，该异常出现在发现 `多个转换方法转换同一类型对象到同一目标对象` 的情况；
+2. ConvertException：转换异常；
