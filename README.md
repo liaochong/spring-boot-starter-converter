@@ -44,10 +44,12 @@ public class UserConverter{
 ```
 2、使用类 `com.github.liaochong.converter.core.BeanConverter` 进行转换，参数类别依次为：转换源对象，转换目标类类型
 
+单个对象转换
 ```java
 UserDO userDO = new UserDO();
 UserBO user = BeanConverter.convert(userDO , UserBO.class);
 ```
+列表对象转换
 ```java
 List<UserDO> list = new ArrayList<>();
 UserDO userDO1 = new UserDO();
