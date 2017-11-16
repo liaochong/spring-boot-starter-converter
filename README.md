@@ -28,7 +28,20 @@ Maven 依赖
 示例 | Example
 ------------------
 
-1、使用注解 `com.github.liaochong.converter.annoation.Converter` 标明转换类
+1、使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter
+
+```java
+@SpringBootApplication
+@EnableConverter
+public class ExampleWarApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ExampleWarApplication.class, args);
+    }
+}
+```
+
+2、使用注解 `com.github.liaochong.converter.annoation.Converter` 标明转换类
 
 ```java
 @Converter
@@ -39,10 +52,9 @@ public class UserConverter{
           result.setName(user.getName());
           return result;
    }
-   
 }
 ```
-2、使用类 `com.github.liaochong.converter.core.BeanConverter` 进行转换，参数类别依次为：转换源对象，转换目标类类型
+3、使用类 `com.github.liaochong.converter.core.BeanConverter` 进行转换，参数类别依次为：转换源对象，转换目标类类型
 
 - 单个对象转换
 ```java
@@ -69,3 +81,7 @@ list.add(userDO2);
 
 List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ```
+配置 | Configuration
+--------------------
+1、设置spring-boot-starter-converter的扫描路径
+
