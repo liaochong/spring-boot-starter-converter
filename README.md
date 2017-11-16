@@ -27,6 +27,9 @@ Maven 依赖
 ```
 示例 | Example
 ------------------
+
+1、使用注解 `com.github.liaochong.converter.annoation.Converter` 标明转换类
+
 ```java
 @Converter
 public class UserConverter{
@@ -36,5 +39,6 @@ public class UserConverter{
           result.setName(user.getName());
           return result;
    }
+   
 }
 ```
