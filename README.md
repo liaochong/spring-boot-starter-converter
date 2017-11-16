@@ -29,8 +29,9 @@ Maven 依赖
 
 使用条件 | Condition
 ------------------
-1. 转换方法只有一个参数入参，两个或多个参数的方法不会被注册；
-2. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会直接抛出异常-`NonUniqueConverterException`； 
+1. 转换方法只有一个参数入参，多个参数的方法不会被注册；
+2. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会在启动阶段抛出异常-`NonUniqueConverterException`； 
+3. 必须使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter，否则整个starter无效；
 
 示例 | Example
 ------------------
