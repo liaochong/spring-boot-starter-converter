@@ -140,11 +140,13 @@ public class ConversionContext {
 
         Handler existHandler = ACTION_MAP.get(condition);
         if (Objects.nonNull(existHandler)) {
-            String message = "\n{method：" + method.toGenericString() + "}\n{method："
-                    + existHandler.getMethod().toGenericString() + "} 转换源、目标相同";
+            String message = "\n{method：" + method.getDeclaringClass().getName() + "." + method.getName()
+                    + "}\n{method：" + existHandler.getMethod().getDeclaringClass().getName() + "."
+                    + existHandler.getMethod().getName() + "} 转换源、目标相同";
             throw NonUniqueConverterException.of(message);
         }
 
+        LOG.info("mapped \"{" + method.getDeclaringClass().getName() + "." + method.getName() + "}\"");
         Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
