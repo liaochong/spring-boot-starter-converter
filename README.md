@@ -17,11 +17,24 @@ spring-boot-starter-converter 是一款为简化DO、BO、DTO等Bean之间转换
 - **自动完成列表类型转换**：不必手动创建列表类型转换方法，converter会自动帮你完成
 
 Maven 依赖
------------------
+------------------
 ```xml
 <dependency>
     <groupId>com.github.liaochong</groupId>
     <artifactId>spring-boot-starter-converter</artifactId>
     <version>maven 官方最新版本为准</version>
 </dependency>
+```
+示例 | Example
+------------------
+```java
+@Converter
+public class UserConverter{
+
+   public static UserBO convertDO2BO(UserDO user){
+          UserBO result = new UserBO();
+          result.setName(user.getName());
+          return result;
+   }
+}
 ```
