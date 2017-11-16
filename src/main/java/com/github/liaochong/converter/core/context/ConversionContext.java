@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -112,19 +111,28 @@ public class ConversionContext {
             return;
         }
         // 参数唯一，且为public
-        Predicate<Method> commonFilter = method -> method.getParameterCount() == NumberUtils.INTEGER_ONE
+        Predicate<Method> commonFilter = method -> method.getParameterCount() == 1
                 && Modifier.isPublic(method.getModifiers());
 
         Predicate<Method> staticFilter = method -> Objects.isNull(handlerBean) == Modifier
                 .isStatic(method.getModifiers());
 
-        Arrays.stream(methods).filter(commonFilter).filter(staticFilter).forEach(method -> {
-            Class<?>[] paramTypes = method.getParameterTypes();
-            Class<?> returnType = method.getReturnType();
-            Condition condition = new Condition(paramTypes[NumberUtils.INTEGER_ZERO], returnType);
-            Handler handler = Handler.newHandler(handlerBean, method);
-            ACTION_MAP.put(condition, handler);
-        });
+        Arrays.stream(methods).filter(commonFilter).filter(staticFilter)
+                .forEach(method -> ConversionContext.setAction(method, handlerBean));
+    }
+
+    /**
+     * 设置action
+     * 
+     * @param method 转换方法
+     * @param handlerBean 转换对象
+     */
+    private static void setAction(Method method, Object handlerBean) {
+        Class<?>[] paramTypes = method.getParameterTypes();
+        Class<?> returnType = method.getReturnType();
+        Condition condition = new Condition(paramTypes[0], returnType);
+        Handler handler = Handler.newHandler(handlerBean, method);
+        ACTION_MAP.put(condition, handler);
     }
 
     /**
