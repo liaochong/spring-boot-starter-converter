@@ -15,6 +15,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
@@ -28,12 +30,14 @@ import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
  */
 public class ConversionContext {
 
+    private static final Log LOG = LogFactory.getLog(ConversionContext.class);
+
     private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
 
     private static boolean enableConverter = false;
 
     /**
-     * 是否允许转换
+     * 转换starter是否无效
      * 
      * @return true/false
      */
@@ -49,9 +53,11 @@ public class ConversionContext {
      */
     public static void initialize(String scanPackageName, Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(ACTION_MAP)) {
+            LOG.info("start initialize conversion environment");
             enableConverter = true;
             initStaticActionMap(scanPackageName);
             initNonStaticActionMap(converterBeans);
+            LOG.info("conversion environment initialization completed");
         }
     }
 
@@ -61,7 +67,7 @@ public class ConversionContext {
      * @param scanPackageName 扫描路径
      */
     private static void initStaticActionMap(String scanPackageName) {
-        Set<Class<?>> set = collectConverter(scanPackageName);
+        Set<Class<?>> set = collectConverterClass(scanPackageName);
         if (CollectionUtils.isEmpty(set)) {
             return;
         }
@@ -86,7 +92,7 @@ public class ConversionContext {
      *
      * @return 列表集
      */
-    private static Set<Class<?>> collectConverter(String scanPackageName) {
+    private static Set<Class<?>> collectConverterClass(String scanPackageName) {
         Set<Class<?>> set = ClassUtil.getClassSet(scanPackageName);
         if (CollectionUtils.isEmpty(set)) {
             return Collections.emptySet();
