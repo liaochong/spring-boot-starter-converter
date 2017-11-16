@@ -28,7 +28,7 @@ Maven 依赖
 示例 | Example
 ------------------
 
-1、使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter
+1. 使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter
 
 ```java
 @SpringBootApplication
@@ -41,7 +41,7 @@ public class ExampleWarApplication {
 }
 ```
 
-2、使用注解 `com.github.liaochong.converter.annoation.Converter` 标明转换类
+2. 使用注解 `com.github.liaochong.converter.annoation.Converter` 标明转换类
 
 ```java
 @Converter
@@ -54,7 +54,7 @@ public class UserConverter{
    }
 }
 ```
-3、使用类 `com.github.liaochong.converter.core.BeanConverter` 进行转换，参数类别依次为：转换源对象，转换目标类类型
+3. 使用类 `com.github.liaochong.converter.core.BeanConverter` 进行转换，参数类别依次为：转换源对象，转换目标类类型
 
 - 单个对象转换
 ```java
@@ -83,6 +83,5 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ```
 配置 | Configuration
 --------------------
-1.设置spring-boot-starter-converter的扫描路径
-  在application.properties中设置扫描路径，支持多个路径 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`
+1. 设置spring-boot-starter-converter的扫描路径：在application.properties中设置扫描路径，支持多个路径 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`
 
