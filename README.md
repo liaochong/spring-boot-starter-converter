@@ -59,7 +59,7 @@ list.add(userDO2);
 
 List<UserBO> users = BeanConverter.convert(list , UserBO.class);
 ```
-- 列表对象*并行*转换
+- 列表对象`并行`转换
 ```java
 List<UserDO> list = new ArrayList<>();
 UserDO userDO1 = new UserDO();
