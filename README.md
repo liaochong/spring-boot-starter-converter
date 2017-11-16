@@ -88,6 +88,6 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 异常 | Exception
 -------------------
 1. NonUniqueConverterException：非唯一转换方法异常，该异常出现在发现 `多个转换方法转换同一类型对象到同一目标对象` 的情况；
-2. ConverterUnenabledException：转换器不可用异常，该异常出现出现的原因是使用了BeanConverter的各个方法，但是未使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter；
+2. ConverterDisabledException：转换器不可用异常，该异常出现出现的原因是使用了BeanConverter的各个方法，但是未使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter；
 3. NoConverterException：无转换方法异常，该异常出现的原因是使用了BeanConverter的方法，但查找不到对应的转换方法；
 4. ConvertException：转换异常；
