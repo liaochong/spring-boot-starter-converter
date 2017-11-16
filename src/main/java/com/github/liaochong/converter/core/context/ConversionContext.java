@@ -136,7 +136,7 @@ public class ConversionContext {
         Class<?>[] paramTypes = method.getParameterTypes();
         Class<?> returnType = method.getReturnType();
         Condition condition = Condition.newInstance(paramTypes[0], returnType);
-        Handler handler = Handler.newHandler(handlerBean, method);
+        Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
 

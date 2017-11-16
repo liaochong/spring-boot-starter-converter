@@ -29,7 +29,7 @@ public class Handler {
      * @param method 处理方法
      * @return Handler
      */
-    public static Handler newHandler(Object handler, Method method) {
+    public static Handler newInstance(Object handler, Method method) {
         return new Handler(handler, method);
     }
 }
