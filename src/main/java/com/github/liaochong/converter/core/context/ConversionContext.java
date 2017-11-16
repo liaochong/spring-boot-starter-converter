@@ -137,11 +137,16 @@ public class ConversionContext {
         Class<?>[] paramTypes = method.getParameterTypes();
         Class<?> returnType = method.getReturnType();
         Condition condition = Condition.newInstance(paramTypes[0], returnType);
-        Handler handler = Handler.newInstance(handlerBean, method);
-        if (ACTION_MAP.containsKey(condition)) {
-            throw NonUniqueConverterException
-                    .of("转换源：" + paramTypes[0].getName() + "，转换目标：" + returnType.getName() + "存在重复转换方法");
+
+        Handler existHandler = ACTION_MAP.get(condition);
+        if (Objects.nonNull(existHandler)) {
+            String message = "class-one：" + method.getDeclaringClass().getName() + "_method-one：" + method.getName()
+                    + "-class-two：" + existHandler.getMethod().getDeclaringClass().getName() + "_method-two："
+                    + existHandler.getMethod().getName() + "存在转换源、目标相同";
+            throw NonUniqueConverterException.of(message);
         }
+
+        Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
 
