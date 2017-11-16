@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 /**
+ * 属性对象
+ *
  * @author liaochong
  * @version V1.0
  */
