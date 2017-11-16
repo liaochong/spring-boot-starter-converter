@@ -119,14 +119,11 @@ public class ConversionContext {
             return;
         }
         // 参数唯一，且为public
-        Predicate<Method> commonFilter = method -> method.getParameterCount() == 1
-                && Modifier.isPublic(method.getModifiers());
+        Predicate<Method> commonFilter = method -> Modifier.isPublic(method.getModifiers())
+                && method.getParameterCount() == 1
+                && Objects.isNull(handlerBean) == Modifier.isStatic(method.getModifiers());
 
-        Predicate<Method> staticFilter = method -> Objects.isNull(handlerBean) == Modifier
-                .isStatic(method.getModifiers());
-
-        Arrays.stream(methods).filter(commonFilter).filter(staticFilter)
-                .forEach(method -> ConversionContext.setAction(method, handlerBean));
+        Arrays.stream(methods).filter(commonFilter).forEach(method -> ConversionContext.setAction(method, handlerBean));
     }
 
     /**
