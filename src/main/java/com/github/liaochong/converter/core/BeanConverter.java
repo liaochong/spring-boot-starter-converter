@@ -12,6 +12,7 @@ import org.apache.commons.collections4.MapUtils;
 import com.github.liaochong.converter.core.context.Condition;
 import com.github.liaochong.converter.core.context.ConversionContext;
 import com.github.liaochong.converter.core.context.Handler;
+import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.NoConverterException;
 import lombok.Data;
@@ -80,7 +81,7 @@ public class BeanConverter {
         try {
             return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw ConvertException.of(e);
         }
     }
 }
