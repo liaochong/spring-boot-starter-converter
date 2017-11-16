@@ -85,3 +85,5 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 --------------------
 1. 设置spring-boot-starter-converter的扫描路径：在application.properties中设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，若不设置，默认全局扫描
 
+异常 | Exception
+-------------------
