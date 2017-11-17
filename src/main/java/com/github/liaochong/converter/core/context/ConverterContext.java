@@ -168,7 +168,7 @@ public class ConverterContext {
         if (Objects.nonNull(existHandler)) {
             String message = "\n{method：" + method.getDeclaringClass().getName() + "." + method.getName()
                     + "}\n{method：" + existHandler.getMethod().getDeclaringClass().getName() + "."
-                    + existHandler.getMethod().getName() + "} 转换源、目标相同";
+                    + existHandler.getMethod().getName() + "} convert source and target is the same ";
             throw NonUniqueConverterException.of(message);
         }
 
