@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import com.github.liaochong.converter.annoation.Converter;
-import com.github.liaochong.converter.core.context.ConverterContext;
+import com.github.liaochong.converter.context.ConverterContext;
 
 /**
  * 启动监听器

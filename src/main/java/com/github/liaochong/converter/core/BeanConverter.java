@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 
-import com.github.liaochong.converter.core.context.Condition;
-import com.github.liaochong.converter.core.context.ConverterContext;
-import com.github.liaochong.converter.core.context.Handler;
+import com.github.liaochong.converter.context.Condition;
+import com.github.liaochong.converter.context.ConverterContext;
+import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.NoConverterException;
