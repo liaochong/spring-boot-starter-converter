@@ -20,12 +20,22 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ConfigurationProperties(prefix = "bean.conversion")
-class ConverterProperties {
+public class ConverterProperties {
 
     /**
      * 若不填，默认全局扫描
      */
     Set<String> scanPackages;
+
+    /**
+     * 只扫描静态转换方法
+     */
+    boolean onlyScanStaticMethod = false;
+
+    /**
+     * 只扫描非静态转换方法
+     */
+    boolean onlyScanNonStaticMethod = false;
 
     public void setScanPackages(Set<String> scanPackages) {
         if (CollectionUtils.isNotEmpty(scanPackages)) {

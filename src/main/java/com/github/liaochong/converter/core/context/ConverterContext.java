@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.github.liaochong.converter.annoation.Converter;
+import com.github.liaochong.converter.configuration.ConverterProperties;
+import com.github.liaochong.converter.exception.IllegalOperationException;
 import com.github.liaochong.converter.exception.NonUniqueConverterException;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
@@ -35,6 +38,14 @@ public class ConverterContext {
 
     private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
 
+    /**
+     * 是否已经初始化标志
+     */
+    private static boolean isInitialized = false;
+
+    /**
+     * 是否开启starter标志
+     */
     private static boolean enableConverter = false;
 
     /**
@@ -49,17 +60,25 @@ public class ConverterContext {
     /**
      * 初始化上下文环境
      * 
-     * @param scanPackages 扫描包集合
+     * @param converterProperties 转换上下文属性对象
      * @param converterBeans spring扫描到的bean
      */
-    public static void initialize(Set<String> scanPackages, Map<String, Object> converterBeans) {
-        if (MapUtils.isEmpty(ACTION_MAP)) {
-            LOG.info("start initialize conversion environment");
-            enableConverter = true;
-            initStaticActionMap(scanPackages);
-            initNonStaticActionMap(converterBeans);
-            LOG.info("conversion environment initialization completed");
+    public static void initialize(ConverterProperties converterProperties, Map<String, Object> converterBeans) {
+        if (isInitialized) {
+            // 不允许使用该接口手动初始化
+            throw IllegalOperationException.of("不允许直接使用initialize接口进行初始化");
         }
+        LOG.info("start initialize conversion environment");
+        // 开启转换上下文标志
+        enableConverter = true;
+        if (!converterProperties.isOnlyScanNonStaticMethod()) {
+            initStaticActionMap(converterProperties.getScanPackages());
+        }
+        if (!converterProperties.isOnlyScanStaticMethod()) {
+            initNonStaticActionMap(converterBeans);
+        }
+        isInitialized = true;
+        LOG.info("conversion environment initialization completed");
     }
 
     /**
@@ -72,9 +91,8 @@ public class ConverterContext {
         if (CollectionUtils.isEmpty(scanPackages)) {
             set = collectConverterClass(StringUtils.EMPTY);
         } else {
-            set = scanPackages.parallelStream()
-                    .flatMap(scanPackage -> ConverterContext.collectConverterClass(scanPackage).stream())
-                    .collect(Collectors.toSet());
+            Function<String, Stream<Class<?>>> function = scanPackage -> collectConverterClass(scanPackage).stream();
+            set = scanPackages.parallelStream().flatMap(function).collect(Collectors.toSet());
         }
         if (CollectionUtils.isEmpty(set)) {
             return;
