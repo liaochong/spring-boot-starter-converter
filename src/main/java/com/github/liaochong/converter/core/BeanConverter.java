@@ -15,13 +15,11 @@ import com.github.liaochong.converter.core.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.NoConverterException;
-import lombok.Data;
 
 /**
  * @author liaochong
  * @version V1.0
  */
-@Data
 public class BeanConverter {
 
     /**
