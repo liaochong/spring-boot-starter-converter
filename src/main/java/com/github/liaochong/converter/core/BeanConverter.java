@@ -67,16 +67,16 @@ public class BeanConverter {
      */
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
         if (ConverterContext.isDisable()) {
-            throw ConverterDisabledException.of("未开启@EnableConverter");
+            throw ConverterDisabledException.of("@EnableConverter annotation not enabled");
         }
         Map<Condition, Handler> actionMap = ConverterContext.getActionMap();
         if (MapUtils.isEmpty(actionMap)) {
-            throw NoConverterException.of("未找到任何拥有@Converter注解的转换对象");
+            throw NoConverterException.of("No object with @Converter annotations was found");
         }
         Condition condition = Condition.newInstance(convertedObj.getClass(), clz);
         Handler handler = actionMap.get(condition);
         if (Objects.isNull(handler)) {
-            throw NoConverterException.of("未找到对应的转换方法");
+            throw NoConverterException.of("The corresponding conversion method was not found");
         }
         try {
             return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));
