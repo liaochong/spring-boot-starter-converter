@@ -95,6 +95,7 @@ public class ConverterContext {
             set = scanPackages.parallelStream().flatMap(function).collect(Collectors.toSet());
         }
         if (CollectionUtils.isEmpty(set)) {
+            LOG.info("无静态转换对象");
             return;
         }
         set.parallelStream().forEach(clz -> packagingAction(clz.getDeclaredMethods(), null));
@@ -107,6 +108,7 @@ public class ConverterContext {
      */
     private static void initNonStaticActionMap(Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(converterBeans)) {
+            LOG.info("无非静态转换对象");
             return;
         }
         Stream<Object> objectStream = converterBeans.values().parallelStream();
