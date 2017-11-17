@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 /**
+ * 转换条件
+ *
  * @author liaochong
  * @version V1.0
  */
