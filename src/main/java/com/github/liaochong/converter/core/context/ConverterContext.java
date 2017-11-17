@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.converter.configuration.ConverterProperties;
 import com.github.liaochong.converter.exception.IllegalOperationException;
+import com.github.liaochong.converter.exception.NoConverterException;
 import com.github.liaochong.converter.exception.NonUniqueConverterException;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
@@ -66,7 +67,8 @@ public class ConverterContext {
     public static void initialize(ConverterProperties converterProperties, Map<String, Object> converterBeans) {
         if (isInitialized) {
             // 不允许使用该接口手动初始化
-            throw IllegalOperationException.of("不允许直接使用initialize接口进行初始化");
+            throw IllegalOperationException
+                    .of("It is not allowed to initialize directly with the initialize interface");
         }
         LOG.info("start initialize conversion environment");
         // 开启转换上下文标志
@@ -76,6 +78,10 @@ public class ConverterContext {
         }
         if (!converterProperties.isOnlyScanStaticMethod()) {
             initNonStaticActionMap(converterBeans);
+        }
+        // 严格模式下，必须存在转换器
+        if (converterProperties.isStrictMode() && MapUtils.isEmpty(ACTION_MAP)) {
+            throw NoConverterException.of("There is no any converter exist");
         }
         isInitialized = true;
         LOG.info("conversion environment initialization completed");
@@ -95,7 +101,7 @@ public class ConverterContext {
             set = scanPackages.parallelStream().flatMap(function).collect(Collectors.toSet());
         }
         if (CollectionUtils.isEmpty(set)) {
-            LOG.info("无静态转换对象");
+            LOG.warn("There is no any static conversion object");
             return;
         }
         set.parallelStream().forEach(clz -> packagingAction(clz.getDeclaredMethods(), null));
@@ -108,7 +114,7 @@ public class ConverterContext {
      */
     private static void initNonStaticActionMap(Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(converterBeans)) {
-            LOG.info("无非静态转换对象");
+            LOG.warn("There is no any non-static conversion object");
             return;
         }
         Stream<Object> objectStream = converterBeans.values().parallelStream();
