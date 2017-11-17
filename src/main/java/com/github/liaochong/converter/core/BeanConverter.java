@@ -10,7 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 
 import com.github.liaochong.converter.core.context.Condition;
-import com.github.liaochong.converter.core.context.ConversionContext;
+import com.github.liaochong.converter.core.context.ConverterContext;
 import com.github.liaochong.converter.core.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
@@ -66,10 +66,10 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
-        if (ConversionContext.isDisable()) {
+        if (ConverterContext.isDisable()) {
             throw ConverterDisabledException.of("未开启@EnableConverter");
         }
-        Map<Condition, Handler> actionMap = ConversionContext.getActionMap();
+        Map<Condition, Handler> actionMap = ConverterContext.getActionMap();
         if (MapUtils.isEmpty(actionMap)) {
             throw NoConverterException.of("未找到任何拥有@Converter注解的转换对象");
         }

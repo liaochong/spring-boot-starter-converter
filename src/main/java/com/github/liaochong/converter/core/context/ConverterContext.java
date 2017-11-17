@@ -29,9 +29,9 @@ import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
  * @author liaochong
  * @version V1.0
  */
-public class ConversionContext {
+public class ConverterContext {
 
-    private static final Log LOG = LogFactory.getLog(ConversionContext.class);
+    private static final Log LOG = LogFactory.getLog(ConverterContext.class);
 
     private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
 
@@ -73,7 +73,7 @@ public class ConversionContext {
             set = collectConverterClass(StringUtils.EMPTY);
         } else {
             set = scanPackages.parallelStream()
-                    .flatMap(scanPackage -> ConversionContext.collectConverterClass(scanPackage).stream())
+                    .flatMap(scanPackage -> ConverterContext.collectConverterClass(scanPackage).stream())
                     .collect(Collectors.toSet());
         }
         if (CollectionUtils.isEmpty(set)) {
@@ -124,7 +124,7 @@ public class ConversionContext {
                 && method.getParameterCount() == 1
                 && Objects.isNull(handlerBean) == Modifier.isStatic(method.getModifiers());
 
-        Arrays.stream(methods).filter(commonFilter).forEach(method -> ConversionContext.setAction(method, handlerBean));
+        Arrays.stream(methods).filter(commonFilter).forEach(method -> ConverterContext.setAction(method, handlerBean));
     }
 
     /**

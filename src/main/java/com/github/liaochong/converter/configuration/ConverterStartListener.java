@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import com.github.liaochong.converter.annoation.Converter;
-import com.github.liaochong.converter.core.context.ConversionContext;
+import com.github.liaochong.converter.core.context.ConverterContext;
 
 /**
  * 启动监听器
@@ -29,6 +29,6 @@ public class ConverterStartListener implements ApplicationListener<ContextRefres
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, Object> converterBeans = applicationContext.getBeansWithAnnotation(Converter.class);
-        ConversionContext.initialize(converterProperties.getScanPackages(), converterBeans);
+        ConverterContext.initialize(converterProperties.getScanPackages(), converterBeans);
     }
 }
