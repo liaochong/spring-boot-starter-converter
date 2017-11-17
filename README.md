@@ -30,9 +30,10 @@ Maven 依赖
 
 使用条件 | Condition
 ------------------
-1. 转换方法只有一个参数入参，多个参数的方法不会被注册；
-2. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会在启动阶段抛出异常-`NonUniqueConverterException`； 
-3. 必须使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter，否则starter不会进行相应的初始化工作；
+1. 转换方法必须为 `public` 修饰符修饰，否则，不会被注册；
+2. 转换方法只能有一个参数入参，多个参数的方法不会被注册；
+3. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会在启动阶段抛出异常-`NonUniqueConverterException`； 
+4. 必须使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter，否则starter不会进行相应的初始化工作；
 
 示例 | Example
 ------------------
@@ -92,11 +93,15 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ```
 配置 | Configuration
 --------------------
-1. 设置spring-boot-starter-converter的扫描路径：在application.properties中设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
+1. bean.conversion.scan-packages：设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
+2. bean.conversion.only-scan-static-method：设置是否只扫描静态方法，如 `bean.conversion.only-scan-static-method=true`，若不设置，默认为 `false`；
+3. bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
+4. bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时启动抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
 
 异常 | Exception
 -------------------
 1. NonUniqueConverterException：非唯一转换方法异常，该异常出现在发现 `多个转换方法转换同一类型对象到同一目标对象` 的情况；
 2. ConverterDisabledException：转换器不可用异常，该异常出现出现的原因是使用了BeanConverter的各个方法，但是未使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter；
 3. NoConverterException：无转换方法异常，该异常出现的原因是使用了BeanConverter的方法，但查找不到对应的转换方法；
-4. ConvertException：转换异常；
+4. IllegalOperationException：非法操作异常，该异常出现的原因是使用了转换上下文不可手动使用的方法；
+5. ConvertException：转换异常；
