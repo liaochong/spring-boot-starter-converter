@@ -12,9 +12,11 @@ spring-boot-starter-converter 是一款为简化DO、BO、DTO等Bean之间转换
 优点 | Advantages
 ------------------
 
-- **可统一各个转换类名称**：针对每个业务单元，其转换类名称可全部统一，如Converter，避免取名的烦恼
-- **转换时无需记住转换方法名称**：直接使用如BeanConverter.convert(source,target.class)这样的方式转换，无需记住长长的名称
-- **自动完成列表类型转换**：不必手动创建列表类型转换方法，converter会自动帮你完成
+- **降低耦合**：所有转换方法由转换器上下文管理，改变方法名称或者修饰符等不需要更新使用代码；
+- **可统一各个转换类名称**：针对每个业务单元，其转换类名称可全部统一，如Converter，避免取名的烦恼；
+- **转换时无需记住转换方法名称**：直接使用如BeanConverter.convert(source,target.class)这样的方式转换，无需记住长长的名称；
+- **自动完成列表类型转换**：不必手动创建列表类型转换方法，converter会自动帮你完成；
+- **支持非静态方法**：支持非静态方法，避免手动引入Bean，简化代码；
 
 Maven 依赖
 ------------------
@@ -25,6 +27,13 @@ Maven 依赖
     <version>maven 官方最新版本为准</version>
 </dependency>
 ```
+
+使用条件 | Condition
+------------------
+1. 转换方法只有一个参数入参，多个参数的方法不会被注册；
+2. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会在启动阶段抛出异常-`NonUniqueConverterException`； 
+3. 必须使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter，否则starter不会进行响应的初始化工作；
+
 示例 | Example
 ------------------
 
