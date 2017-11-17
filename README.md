@@ -95,7 +95,7 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 1. bean.conversion.scan-packages：设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
 2. bean.conversion.only-scan-static-method：设置是否只扫描静态方法，如 `bean.conversion.only-scan-static-method=true`，若不设置，默认为 `false`；
 3. bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
-4. bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时启动抛出异常，若不设置，默认为 `false`；
+4. bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时启动抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
 
 异常 | Exception
 -------------------
