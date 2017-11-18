@@ -61,6 +61,40 @@ public class BeanConverter {
     }
 
     /**
+     * 集合并行转换
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
+        if (CollectionUtils.isEmpty(source)) {
+            return Collections.emptyList();
+        }
+        return source.parallelStream().map(convertedObj -> convert(convertedObj, targetClass))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 集合非空并行转换
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass) {
+        if (CollectionUtils.isEmpty(source)) {
+            return Collections.emptyList();
+        }
+        return source.parallelStream().filter(Objects::nonNull).map(convertedObj -> convert(convertedObj, targetClass))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 转换
      *
      * @param source 被转换对象
@@ -94,20 +128,4 @@ public class BeanConverter {
         }
     }
 
-    /**
-     * 集合并行转换
-     *
-     * @param source 需要转换的集合
-     * @param targetClass 需要转换到的类型
-     * @param <E> 转换后的类型
-     * @param <T> 转换前的类型
-     * @return 结果
-     */
-    public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
-        if (CollectionUtils.isEmpty(source)) {
-            return Collections.emptyList();
-        }
-        return source.parallelStream().map(convertedObj -> convert(convertedObj, targetClass))
-                .collect(Collectors.toList());
-    }
 }
