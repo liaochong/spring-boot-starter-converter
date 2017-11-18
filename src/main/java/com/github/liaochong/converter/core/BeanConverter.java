@@ -3,11 +3,9 @@ package com.github.liaochong.converter.core;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 
 import com.github.liaochong.converter.context.Condition;
 import com.github.liaochong.converter.context.ConverterContext;
@@ -15,6 +13,9 @@ import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.NoConverterException;
+import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
+import com.github.liaochong.ratel.tools.core.validator.MapValidator;
+import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
 
 /**
  * @author liaochong
@@ -64,18 +65,18 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T convertedObj, Class<E> clz) {
-        if (ConverterContext.isDisable()) {
-            throw ConverterDisabledException.of("@EnableConverter annotation not enabled");
-        }
+        BooleanValidator.ifTrueThrow(ConverterContext.isDisable(),
+                () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
+
         Map<Condition, Handler> actionMap = ConverterContext.getActionMap();
-        if (MapUtils.isEmpty(actionMap)) {
-            throw NoConverterException.of("No object with @Converter annotations was found");
-        }
+        MapValidator.ifEmptyThrow(actionMap,
+                () -> NoConverterException.of("No object with @Converter annotations was found"));
+
         Condition condition = Condition.newInstance(convertedObj.getClass(), clz);
         Handler handler = actionMap.get(condition);
-        if (Objects.isNull(handler)) {
-            throw NoConverterException.of("The corresponding conversion method was not found");
-        }
+        ObjectValidator.ifNullThrow(handler,
+                () -> NoConverterException.of("The corresponding conversion method was not found"));
+
         try {
             return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));
         } catch (Exception e) {

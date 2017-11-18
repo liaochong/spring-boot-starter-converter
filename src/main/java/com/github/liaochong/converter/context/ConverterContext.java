@@ -22,10 +22,12 @@ import org.apache.commons.logging.LogFactory;
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.converter.configuration.ConverterProperties;
 import com.github.liaochong.converter.exception.IllegalOperationException;
+import com.github.liaochong.converter.exception.InvalidConfigurationException;
 import com.github.liaochong.converter.exception.NoConverterException;
 import com.github.liaochong.converter.exception.NonUniqueConverterException;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
+import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
 
 /**
  * 转换上下文
@@ -65,11 +67,12 @@ public class ConverterContext {
      * @param converterBeans spring扫描到的bean
      */
     public static void initialize(ConverterProperties converterProperties, Map<String, Object> converterBeans) {
-        if (isInitialized) {
-            // 不允许使用该接口手动初始化
-            throw IllegalOperationException
-                    .of("It is not allowed to initialize directly with the initialize interface");
-        }
+        // 不允许使用该接口手动初始化
+        BooleanValidator.ifTrueThrow(isInitialized, () -> IllegalOperationException
+                .of("It is not allowed to initialize directly with the initialize interface"));
+
+        LOG.info("Check user-defined configuration");
+        checkProperties(converterProperties);
         LOG.info("start initialize conversion environment");
         // 开启转换上下文标志
         enableConverter = true;
@@ -80,11 +83,22 @@ public class ConverterContext {
             initNonStaticActionMap(converterBeans);
         }
         // 严格模式下，必须存在转换器
-        if (converterProperties.isStrictMode() && MapUtils.isEmpty(ACTION_MAP)) {
-            throw NoConverterException.of("There is no any converter exist");
-        }
+        boolean isStrictFail = converterProperties.isStrictMode() && MapUtils.isEmpty(ACTION_MAP);
+        BooleanValidator.ifTrueThrow(isStrictFail, () -> NoConverterException.of("There is no any converter exist"));
+
         isInitialized = true;
         LOG.info("conversion environment initialization completed");
+    }
+
+    /**
+     * 校验属性文件合法性
+     * 
+     * @param properties 转换上下文属性对象
+     */
+    private static void checkProperties(ConverterProperties properties) {
+        boolean isIllegal = properties.isOnlyScanNonStaticMethod() && properties.isOnlyScanStaticMethod();
+        BooleanValidator.ifTrueThrow(isIllegal, () -> InvalidConfigurationException
+                .of("Only scanning static methods or scanning only non static methods can only select one"));
     }
 
     /**
