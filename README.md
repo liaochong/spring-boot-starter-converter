@@ -102,9 +102,9 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 -------------------
 序号 | 接口签名 | 说明
 ----|------|----
-1 | foo  | foo
-2 | bar  | bar
-3 | baz  | baz
+1 | public static <E, T> E convert(T source, Class<E> targetClass)  | foo
+2 | public static <E, T> List<E> convert(List<T> source, Class<E> targetClass)  | bar
+3 | public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)  | baz
 
 异常 | Exception
 -------------------
