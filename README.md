@@ -100,11 +100,11 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 
 接口 | Interface
 -------------------
-dog | bird | cat
+序号 | 接口签名 | 说明
 ----|------|----
-foo | foo  | foo
-bar | bar  | bar
-baz | baz  | baz
+1 | foo  | foo
+2 | bar  | bar
+3 | baz  | baz
 
 异常 | Exception
 -------------------
