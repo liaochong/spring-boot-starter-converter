@@ -3,6 +3,7 @@ package com.github.liaochong.converter.core;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,6 +13,7 @@ import com.github.liaochong.converter.context.ConverterContext;
 import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
+import com.github.liaochong.converter.exception.InvalidParameterException;
 import com.github.liaochong.converter.exception.NoConverterException;
 import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
 import com.github.liaochong.ratel.tools.core.validator.MapValidator;
@@ -49,6 +51,11 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T source, Class<E> targetClass) {
+        if (Objects.isNull(source)) {
+            return null;
+        }
+        ObjectValidator.ifNullThrow(targetClass, () -> InvalidParameterException.of("targetClass can not be null"));
+
         BooleanValidator.ifTrueThrow(ConverterContext.isDisable(),
                 () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
 
