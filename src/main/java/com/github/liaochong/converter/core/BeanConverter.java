@@ -26,45 +26,29 @@ public class BeanConverter {
     /**
      * 集合转换
      *
-     * @param data 需要转换的集合
-     * @param clz 需要转换到的类型
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
      * @return 结果
      */
-    public static <E, T> List<E> convert(List<T> data, Class<E> clz) {
-        if (CollectionUtils.isEmpty(data)) {
+    public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) {
+        if (CollectionUtils.isEmpty(source)) {
             return Collections.emptyList();
         }
-        return data.stream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
-    }
-
-    /**
-     * 集合转换
-     *
-     * @param data 需要转换的集合
-     * @param clz 需要转换到的类型
-     * @param <E> 转换后的类型
-     * @param <T> 转换前的类型
-     * @return 结果
-     */
-    public static <E, T> List<E> parallelConvert(List<T> data, Class<E> clz) {
-        if (CollectionUtils.isEmpty(data)) {
-            return Collections.emptyList();
-        }
-        return data.parallelStream().map(convertedObj -> convert(convertedObj, clz)).collect(Collectors.toList());
+        return source.stream().map(convertedObj -> convert(convertedObj, targetClass)).collect(Collectors.toList());
     }
 
     /**
      * 转换
      *
-     * @param convertedObj 被转换对象
-     * @param clz 需要转换到的类型
+     * @param source 被转换对象
+     * @param targetClass 需要转换到的类型
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
      * @return 结果
      */
-    public static <E, T> E convert(T convertedObj, Class<E> clz) {
+    public static <E, T> E convert(T source, Class<E> targetClass) {
         BooleanValidator.ifTrueThrow(ConverterContext.isDisable(),
                 () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
 
@@ -72,15 +56,32 @@ public class BeanConverter {
         MapValidator.ifEmptyThrow(actionMap,
                 () -> NoConverterException.of("No object with @Converter annotations was found"));
 
-        Condition condition = Condition.newInstance(convertedObj.getClass(), clz);
+        Condition condition = Condition.newInstance(source.getClass(), targetClass);
         Handler handler = actionMap.get(condition);
         ObjectValidator.ifNullThrow(handler,
                 () -> NoConverterException.of("The corresponding conversion method was not found"));
 
         try {
-            return clz.cast(handler.getMethod().invoke(handler.getHandler(), convertedObj));
+            return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (Exception e) {
             throw ConvertException.of(e);
         }
+    }
+
+    /**
+     * 集合转换
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
+        if (CollectionUtils.isEmpty(source)) {
+            return Collections.emptyList();
+        }
+        return source.parallelStream().map(convertedObj -> convert(convertedObj, targetClass))
+                .collect(Collectors.toList());
     }
 }
