@@ -20,6 +20,8 @@ import com.github.liaochong.ratel.tools.core.validator.MapValidator;
 import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
 
 /**
+ * Bean 转换器
+ *
  * @author liaochong
  * @version V1.0
  */
@@ -39,6 +41,23 @@ public class BeanConverter {
             return Collections.emptyList();
         }
         return source.stream().map(convertedObj -> convert(convertedObj, targetClass)).collect(Collectors.toList());
+    }
+
+    /**
+     * 集合非空转换，会过滤为空的数据
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T> List<E> nonNullConvert(List<T> source, Class<E> targetClass) {
+        if (CollectionUtils.isEmpty(source)) {
+            return Collections.emptyList();
+        }
+        return source.stream().filter(Objects::nonNull).map(convertedObj -> convert(convertedObj, targetClass))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -76,7 +95,7 @@ public class BeanConverter {
     }
 
     /**
-     * 集合转换
+     * 集合并行转换
      *
      * @param source 需要转换的集合
      * @param targetClass 需要转换到的类型
