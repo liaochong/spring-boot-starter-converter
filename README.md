@@ -102,9 +102,18 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 -------------------
 序号 | 接口签名 | 说明
 ----|------|----
-1 | ```java public static <E, T> E convert(T source, Class<E> targetClass) ``` | 单个Bean转换
-2 | ```java public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) ``` | 列表Beans顺序转换
-3 | ```java public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) ``` | 列表Beans并行转换
+1 | 
+```
+java public static <E, T> E convert(T source, Class<E> targetClass)
+``` | 单个Bean转换
+2 | 
+```java 
+public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) 
+``` | 列表Beans顺序转换
+3 | 
+```java 
+public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)
+``` | 列表Beans并行转换
 
 异常 | Exception
 -------------------
