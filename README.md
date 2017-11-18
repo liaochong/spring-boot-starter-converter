@@ -98,6 +98,14 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 3. （可选）bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
 4. （可选）bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时项目启动过程抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
 
+接口 | Interface
+-------------------
+序号 | 接口签名 | 说明
+----|------|----
+1 | `public static <E, T> E convert(T source, Class<E> targetClass)`| 单个Bean转换
+2 | `public static <E, T> List<E> convert(List<T> source, Class<E> targetClass)`| 列表Beans顺序转换
+3 | `public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)`| 列表Beans并行转换
+
 异常 | Exception
 -------------------
 1. NonUniqueConverterException：非唯一转换方法异常，该异常出现在发现 `多个转换方法转换同一类型对象到同一目标对象` 的情况；
