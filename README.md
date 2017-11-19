@@ -120,4 +120,4 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 4. IllegalOperationException：非法操作异常，该异常出现的原因是使用了转换上下文不可手动使用的方法；
 5. InvalidConfigurationException：无效配置异常，该异常出现的原因是配置冲突导致的无效，如同时设置 `bean.conversion.only-scan-static-method=true` 和 `bean.conversion.only-scan-non-static-method=true`导致无法扫描任何转换器；
 6. InvalidParameterException：无效参数异常，该异常出现的原因是输入了不合法的参数，如 `convert(UserDO user, null)`，目标类类型不可为NULL；
-7. ConvertException：转换异常；
+7. ConvertException：调用转换方法过程中发生的异常；
