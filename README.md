@@ -104,7 +104,9 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ----|------|----
 1 | `public static <E, T> E convert(T source, Class<E> targetClass)`| 单个Bean转换
 2 | `public static <E, T> List<E> convert(List<T> source, Class<E> targetClass)`| 列表Beans顺序转换
-3 | `public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)`| 列表Beans并行转换
+3 | `public static <E, T> List<E> nonNullConvert(List<T> source, Class<E> targetClass)` | 非空（过滤null对象）转换
+4 | `public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)`| 列表Beans并行转换
+5 | `public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass)` | 非空（过滤null对象）并行转换
 
 异常 | Exception
 -------------------
