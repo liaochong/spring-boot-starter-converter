@@ -118,4 +118,5 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 2. ConverterDisabledException：转换器不可用异常，该异常出现出现的原因是使用了BeanConverter的各个方法，但是未使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter；
 3. NoConverterException：无转换方法异常，该异常出现的原因是使用了BeanConverter的方法，但查找不到对应的转换方法；
 4. IllegalOperationException：非法操作异常，该异常出现的原因是使用了转换上下文不可手动使用的方法；
-5. ConvertException：转换异常；
+5. InvalidConfigurationException：无效配置异常，该异常出现的原因是配置冲突导致的无效，如同时设置 `bean.conversion.only-scan-static-method=true` 和 `bean.conversion.only-scan-non-static-method=true`导致无法扫描任何转换器；
+6. ConvertException：转换异常；
