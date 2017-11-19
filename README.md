@@ -108,8 +108,8 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 4 | `public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)`| 列表Beans并行转换
 5 | `public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass)` | 列表Beans非空（过滤NULL对象）并行转换
 6 | `public static <E, T, G extends RuntimeException> E convertIfNullThrow(T source, Class<E> targetClass,Supplier<G> supplier)` | 单个Bean转换，如果转换对象为NULL，抛出指定异常
-7 | `public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,Supplier<G> supplier)` | 列表Beans转换，如果`存在`转换对象为NULL，抛出指定异常
-8 | `public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,Class<E> targetClass, Supplier<G> supplier)` | 列表Beans并行转换，如果`存在`转换对象为NULL，抛出指定异常
+7 | `public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,Supplier<G> supplier)` | 列表Beans转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常
+8 | `public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,Class<E> targetClass, Supplier<G> supplier)` | 列表Beans并行转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常
 
 
 异常 | Exception
