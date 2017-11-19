@@ -71,7 +71,11 @@ public class BeanConverter {
     private static <E, T, G extends RuntimeException> List<E> convertList(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (CollectionUtils.isEmpty(source)) {
-            return Collections.emptyList();
+            if (Objects.isNull(supplier)) {
+                return Collections.emptyList();
+            } else {
+                throw supplier.get();
+            }
         }
         return source.stream().map(convertedObj -> convertBean(convertedObj, targetClass, supplier))
                 .collect(Collectors.toList());
@@ -137,7 +141,11 @@ public class BeanConverter {
     public static <E, T, G extends RuntimeException> List<E> parallelConvertList(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (CollectionUtils.isEmpty(source)) {
-            return Collections.emptyList();
+            if (Objects.isNull(supplier)) {
+                return Collections.emptyList();
+            } else {
+                throw supplier.get();
+            }
         }
         return source.parallelStream().map(convertedObj -> convertBean(convertedObj, targetClass, supplier))
                 .collect(Collectors.toList());
