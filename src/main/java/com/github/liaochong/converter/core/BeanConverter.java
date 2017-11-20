@@ -71,11 +71,7 @@ public class BeanConverter {
     private static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (CollectionUtils.isEmpty(source)) {
-            if (Objects.isNull(supplier)) {
-                return Collections.emptyList();
-            } else {
-                throw supplier.get();
-            }
+            return ifNonNullThrowOrElse(supplier, Collections::emptyList);
         }
         return source.stream().map(convertedObj -> convertBean(convertedObj, targetClass, supplier))
                 .collect(Collectors.toList());
@@ -141,11 +137,7 @@ public class BeanConverter {
     public static <E, T, G extends RuntimeException> List<E> parallelConvertList(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (CollectionUtils.isEmpty(source)) {
-            if (Objects.isNull(supplier)) {
-                return Collections.emptyList();
-            } else {
-                throw supplier.get();
-            }
+            return ifNonNullThrowOrElse(supplier, Collections::emptyList);
         }
         return source.parallelStream().map(convertedObj -> convertBean(convertedObj, targetClass, supplier))
                 .collect(Collectors.toList());
@@ -211,11 +203,7 @@ public class BeanConverter {
     private static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (Objects.isNull(source)) {
-            if (Objects.isNull(supplier)) {
-                return null;
-            } else {
-                throw supplier.get();
-            }
+            return ifNonNullThrowOrElse(supplier, () -> null);
         }
         ObjectValidator.ifNullThrow(targetClass, () -> InvalidParameterException.of("targetClass can not be null"));
 
@@ -235,6 +223,24 @@ public class BeanConverter {
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (Exception e) {
             throw ConvertException.of(e);
+        }
+    }
+
+    /**
+     * 如果异常提供非空则抛出异常，否则返回提供内容
+     * 
+     * @param exceptionSupplier 异常提供者
+     * @param provider 内容提供者
+     * @param <E> 返回值类型
+     * @param <T> 异常类型
+     * @return 返回值
+     */
+    private static <E, T extends RuntimeException> E ifNonNullThrowOrElse(Supplier<T> exceptionSupplier,
+            Supplier<E> provider) {
+        if (Objects.nonNull(exceptionSupplier)) {
+            throw exceptionSupplier.get();
+        } else {
+            return provider.get();
         }
     }
 
