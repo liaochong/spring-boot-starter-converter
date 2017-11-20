@@ -101,7 +101,8 @@ public class BeanConverterTest {
      */
     @Test
     public void testNonNullParallelConvert() throws Exception {
-        // TODO: Test goes here...
+        List<UserBO> users = BeanConverter.nonNullParallelConvert(list, UserBO.class);
+        assert users.size() == 3;
     }
 
     /**
@@ -119,40 +120,6 @@ public class BeanConverterTest {
          * method.setAccessible(true); method.invoke(<Object>, <Parameters>); }
          * catch(NoSuchMethodException e) { } catch(IllegalAccessException e) { }
          * catch(InvocationTargetException e) { }
-         */
-    }
-
-    /**
-     * 
-     * Method: convertBean(T source, Class<E> targetClass, Supplier<G> supplier)
-     * 
-     */
-    @Test
-    public void testConvertBean() throws Exception {
-        // TODO: Test goes here...
-        /*
-         * try { Method method = BeanConverter.getClass().getMethod("convertBean",
-         * T.class, Class<E>.class, Supplier<G>.class); method.setAccessible(true);
-         * method.invoke(<Object>, <Parameters>); } catch(NoSuchMethodException e) { }
-         * catch(IllegalAccessException e) { } catch(InvocationTargetException e) { }
-         */
-    }
-
-    /**
-     * 
-     * Method: ifNonNullThrowOrElse(Supplier<T> exceptionSupplier, Supplier<E>
-     * provider)
-     * 
-     */
-    @Test
-    public void testIfNonNullThrowOrElse() throws Exception {
-        // TODO: Test goes here...
-        /*
-         * try { Method method =
-         * BeanConverter.getClass().getMethod("ifNonNullThrowOrElse", Supplier<T>.class,
-         * Supplier<E>.class); method.setAccessible(true); method.invoke(<Object>,
-         * <Parameters>); } catch(NoSuchMethodException e) { }
-         * catch(IllegalAccessException e) { } catch(InvocationTargetException e) { }
          */
     }
 
