@@ -38,7 +38,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) {
-        return convertList(source, targetClass, null);
+        return convertBeans(source, targetClass, null);
     }
 
     /**
@@ -54,7 +54,7 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
-        return convertList(source, targetClass, supplier);
+        return convertBeans(source, targetClass, supplier);
     }
 
     /**
@@ -68,7 +68,7 @@ public class BeanConverter {
      * @param <G> 异常返回类型
      * @return 结果
      */
-    private static <E, T, G extends RuntimeException> List<E> convertList(List<T> source, Class<E> targetClass,
+    private static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (CollectionUtils.isEmpty(source)) {
             if (Objects.isNull(supplier)) {
