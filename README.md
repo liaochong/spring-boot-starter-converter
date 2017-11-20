@@ -12,11 +12,11 @@ spring-boot-starter-converter 是一款为简化DO、BO、DTO等Bean之间转换
 优点 | Advantages
 ------------------
 
-- **降低耦合**：所有转换方法由转换器上下文管理，改变方法名称或者修饰符等不需要更新使用代码；
+- **降低耦合**：所有转换方法由转换器上下文管理，改变方法签名或者位置等不需要更新同步调用代码；
 - **可统一各个转换类名称**：针对每个业务单元，其转换类名称可全部统一，如Converter，避免取名的烦恼；
-- **转换时无需记住转换方法名称**：直接使用如BeanConverter.convert(source,target.class)这样的方式转换，无需记住长长的名称；
-- **自动完成列表类型转换**：不必手动创建列表类型转换方法，converter会自动帮你完成；
-- **支持非静态方法**：支持非静态方法，避免手动引入Bean，简化代码；
+- **转换时无需记住转换方法名称**：直接使用如BeanConverter.convert(source,target.class)这样的方式转换，无需关心转换方法的名称；
+- **自动完成列表类型转换**：不必手动创建列表类型转换方法，converter会自动帮你完成，可自行选择是否并行转换；
+- **支持非静态方法**：支持非静态转换方法，避免手动引入Bean，简化代码；
 
 Maven 依赖
 ------------------
@@ -93,10 +93,10 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ```
 配置 | Configuration
 --------------------
-1. （可选）bean.conversion.scan-packages：设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
-2. （可选）bean.conversion.only-scan-static-method：设置是否只扫描静态方法，如 `bean.conversion.only-scan-static-method=true`，若不设置，默认为 `false`；
-3. （可选）bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
-4. （可选）bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时项目启动过程抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
+1. （可选-Optional）bean.conversion.scan-packages：设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
+2. （可选-Optional）bean.conversion.only-scan-static-method：设置是否只扫描静态方法，如 `bean.conversion.only-scan-static-method=true`，若不设置，默认为 `false`；
+3. （可选-Optional）bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
+4. （可选-Optional）bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时项目启动过程抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
 
 接口 | Interface
 -------------------
@@ -108,8 +108,8 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 4 | `public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)`| 列表Beans并行转换
 5 | `public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass)` | 列表Beans非空（过滤NULL对象）并行转换
 6 | `public static <E, T, G extends RuntimeException> E convertIfNullThrow(T source, Class<E> targetClass,Supplier<G> supplier)` | 单个Bean转换，如果转换对象为NULL，抛出指定异常
-7 | `public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,Supplier<G> supplier)` | 列表Beans转换，如果`存在`转换对象为NULL，抛出指定异常
-8 | `public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,Class<E> targetClass, Supplier<G> supplier)` | 列表Beans并行转换，如果`存在`转换对象为NULL，抛出指定异常
+7 | `public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,Supplier<G> supplier)` | 列表Beans转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常
+8 | `public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,Class<E> targetClass, Supplier<G> supplier)` | 列表Beans并行转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常
 
 
 异常 | Exception
@@ -118,4 +118,6 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 2. ConverterDisabledException：转换器不可用异常，该异常出现出现的原因是使用了BeanConverter的各个方法，但是未使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter；
 3. NoConverterException：无转换方法异常，该异常出现的原因是使用了BeanConverter的方法，但查找不到对应的转换方法；
 4. IllegalOperationException：非法操作异常，该异常出现的原因是使用了转换上下文不可手动使用的方法；
-5. ConvertException：转换异常；
+5. InvalidConfigurationException：无效配置异常，该异常出现的原因是配置冲突导致的无效，如同时设置 `bean.conversion.only-scan-static-method=true` 和 `bean.conversion.only-scan-non-static-method=true`导致无法扫描任何转换器；
+6. InvalidParameterException：无效参数异常，该异常出现的原因是输入了不合法的参数，如 `convert(UserDO user, null)`，目标类类型不可为NULL；
+7. ConvertException：调用转换方法过程中发生的异常；
