@@ -104,7 +104,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
-        return parallelConvertList(source, targetClass, null);
+        return parallelConvertBeans(source, targetClass, null);
     }
 
     /**
@@ -120,7 +120,7 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,
             Class<E> targetClass, Supplier<G> supplier) {
-        return parallelConvertList(source, targetClass, supplier);
+        return parallelConvertBeans(source, targetClass, supplier);
     }
 
     /**
@@ -134,7 +134,7 @@ public class BeanConverter {
      * @param <G> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> parallelConvertList(List<T> source, Class<E> targetClass,
+    private static <E, T, G extends RuntimeException> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass,
             Supplier<G> supplier) {
         if (CollectionUtils.isEmpty(source)) {
             return ifNonNullThrowOrElse(supplier, Collections::emptyList);
