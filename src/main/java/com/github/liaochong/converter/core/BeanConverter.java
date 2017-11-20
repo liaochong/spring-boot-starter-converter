@@ -232,15 +232,7 @@ public class BeanConverter {
                 () -> NoConverterException.of("The corresponding conversion method was not found"));
 
         try {
-            E result = targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
-            if (Objects.isNull(result)) {
-                if (Objects.isNull(supplier)) {
-                    return null;
-                } else {
-                    throw supplier.get();
-                }
-            }
-            return result;
+            return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (Exception e) {
             throw ConvertException.of(e);
         }
