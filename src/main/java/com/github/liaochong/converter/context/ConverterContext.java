@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.converter.configuration.ConverterProperties;
+import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.IllegalOperationException;
 import com.github.liaochong.converter.exception.InvalidConfigurationException;
 import com.github.liaochong.converter.exception.NoConverterException;
@@ -28,6 +29,7 @@ import com.github.liaochong.converter.exception.NonUniqueConverterException;
 import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
 import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
+import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
 
 /**
  * 转换上下文
@@ -50,15 +52,6 @@ public class ConverterContext {
      * 是否开启starter标志
      */
     private static boolean enableConverter = false;
-
-    /**
-     * 转换starter是否无效
-     * 
-     * @return true/false
-     */
-    public static boolean isDisable() {
-        return !enableConverter;
-    }
 
     /**
      * 初始化上下文环境
@@ -192,12 +185,18 @@ public class ConverterContext {
     }
 
     /**
-     * 获取actionMap
+     * 根据条件获取对应的handler
      * 
-     * @return Map
+     * @param condition 条件
+     * @return handler
      */
-    public static Map<Condition, Handler> getActionMap() {
-        return ACTION_MAP;
+    public static Handler getActionHandler(Condition condition) {
+        BooleanValidator.ifTrueThrow(!enableConverter,
+                () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
+        Handler handler = ACTION_MAP.get(condition);
+        ObjectValidator.ifNullThrow(handler,
+                () -> NoConverterException.of("The corresponding conversion method was not found"));
+        return handler;
     }
 
 }

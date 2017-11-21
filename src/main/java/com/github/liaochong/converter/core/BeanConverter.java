@@ -2,7 +2,6 @@ package com.github.liaochong.converter.core;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -13,11 +12,7 @@ import com.github.liaochong.converter.context.Condition;
 import com.github.liaochong.converter.context.ConverterContext;
 import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
-import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.InvalidParameterException;
-import com.github.liaochong.converter.exception.NoConverterException;
-import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
-import com.github.liaochong.ratel.tools.core.validator.MapValidator;
 import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
 
 /**
@@ -207,18 +202,8 @@ public class BeanConverter {
         }
         ObjectValidator.ifNullThrow(targetClass, () -> InvalidParameterException.of("targetClass can not be null"));
 
-        BooleanValidator.ifTrueThrow(ConverterContext.isDisable(),
-                () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
-
-        Map<Condition, Handler> actionMap = ConverterContext.getActionMap();
-        MapValidator.ifEmptyThrow(actionMap,
-                () -> NoConverterException.of("No object with @Converter annotations was found"));
-
         Condition condition = Condition.newInstance(source.getClass(), targetClass);
-        Handler handler = actionMap.get(condition);
-        ObjectValidator.ifNullThrow(handler,
-                () -> NoConverterException.of("The corresponding conversion method was not found"));
-
+        Handler handler = ConverterContext.getActionHandler(condition);
         try {
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (Exception e) {
