@@ -37,7 +37,7 @@ import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
  * @author liaochong
  * @version V1.0
  */
-public class ConverterContext {
+public final class ConverterContext {
 
     private static final Log LOG = LogFactory.getLog(ConverterContext.class);
 
