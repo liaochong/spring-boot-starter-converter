@@ -16,8 +16,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.converter.configuration.ConverterProperties;
@@ -30,6 +28,7 @@ import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
 import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
 import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
 import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 转换上下文
@@ -37,9 +36,8 @@ import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
  * @author liaochong
  * @version V1.0
  */
+@Slf4j
 public final class ConverterContext {
-
-    private static final Log LOG = LogFactory.getLog(ConverterContext.class);
 
     private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
 
@@ -64,9 +62,9 @@ public final class ConverterContext {
         BooleanValidator.ifTrueThrow(isInitialized, () -> IllegalOperationException
                 .of("It is not allowed to initialize directly with the initialize interface"));
 
-        LOG.info("Check user-defined configuration");
+        log.info("Check user-defined configuration");
         checkProperties(converterProperties);
-        LOG.info("start initialize conversion environment");
+        log.info("start initialize conversion environment");
         // 开启转换上下文标志
         isDisable = false;
         if (!converterProperties.isOnlyScanNonStaticMethod()) {
@@ -80,7 +78,7 @@ public final class ConverterContext {
         BooleanValidator.ifTrueThrow(isStrictFail, () -> NoConverterException.of("There is no any converter exist"));
 
         isInitialized = true;
-        LOG.info("conversion environment initialization completed");
+        log.info("conversion environment initialization completed");
     }
 
     /**
@@ -108,7 +106,7 @@ public final class ConverterContext {
             set = scanPackages.parallelStream().flatMap(function).collect(Collectors.toSet());
         }
         if (CollectionUtils.isEmpty(set)) {
-            LOG.warn("There is no any static conversion object");
+            log.warn("There is no any static conversion object");
             return;
         }
         set.parallelStream().forEach(clz -> packagingAction(clz.getDeclaredMethods(), null));
@@ -121,7 +119,7 @@ public final class ConverterContext {
      */
     private static void initNonStaticActionMap(Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(converterBeans)) {
-            LOG.info("There is no any non-static conversion object");
+            log.info("There is no any non-static conversion object");
             return;
         }
         Stream<Object> objectStream = converterBeans.values().parallelStream();
@@ -179,7 +177,7 @@ public final class ConverterContext {
             throw NonUniqueConverterException.of(message);
         }
 
-        LOG.info("mapped \"{" + method.getDeclaringClass().getName() + "." + method.getName() + "}\"");
+        log.info("mapped \"{" + method.getDeclaringClass().getName() + "." + method.getName() + "}\"");
         Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
