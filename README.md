@@ -1,4 +1,5 @@
 # spring-boot-starter-converter 文档
+[![Build Status](https://travis-ci.org/com.github.liaochong/spring-boot-starter-converter.svg)](https://travis-ci.org/com.github.liaochong/spring-boot-starter-converter)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.liaochong/spring-boot-starter-converter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.liaochong/spring-boot-starter-converter)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
