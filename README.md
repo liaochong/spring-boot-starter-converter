@@ -1,5 +1,5 @@
 # spring-boot-starter-converter 文档
-[![Build Status](https://travis-ci.org/com.github.liaochong/spring-boot-starter-converter.svg)](https://travis-ci.org/com.github.liaochong/spring-boot-starter-converter)
+[![Build Status](https://travis-ci.org/liaochong/spring-boot-starter-converter.svg?branch=master)](https://travis-ci.org/liaochong/spring-boot-starter-converter)
 [![Coverage Status](https://coveralls.io/repos/github/liaochong/spring-boot-starter-converter/badge.svg?branch=master)](https://coveralls.io/github/liaochong/spring-boot-starter-converter?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.liaochong/spring-boot-starter-converter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.liaochong/spring-boot-starter-converter)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
