@@ -49,9 +49,9 @@ public class ConverterContext {
     private static boolean isInitialized = false;
 
     /**
-     * 是否开启starter标志
+     * 是否开启starter标志，默认未启用
      */
-    private static boolean enableConverter = false;
+    private static boolean isDisable = true;
 
     /**
      * 初始化上下文环境
@@ -68,7 +68,7 @@ public class ConverterContext {
         checkProperties(converterProperties);
         LOG.info("start initialize conversion environment");
         // 开启转换上下文标志
-        enableConverter = true;
+        isDisable = false;
         if (!converterProperties.isOnlyScanNonStaticMethod()) {
             initStaticActionMap(converterProperties.getScanPackages());
         }
@@ -121,7 +121,7 @@ public class ConverterContext {
      */
     private static void initNonStaticActionMap(Map<String, Object> converterBeans) {
         if (MapUtils.isEmpty(converterBeans)) {
-            LOG.warn("There is no any non-static conversion object");
+            LOG.info("There is no any non-static conversion object");
             return;
         }
         Stream<Object> objectStream = converterBeans.values().parallelStream();
@@ -191,7 +191,7 @@ public class ConverterContext {
      * @return handler
      */
     public static Handler getActionHandler(Condition condition) {
-        BooleanValidator.ifTrueThrow(!enableConverter,
+        BooleanValidator.ifTrueThrow(isDisable,
                 () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
         Handler handler = ACTION_MAP.get(condition);
         ObjectValidator.ifNullThrow(handler,
