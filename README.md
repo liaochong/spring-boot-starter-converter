@@ -1,6 +1,5 @@
 # spring-boot-starter-converter 文档
-[![Build Status](https://travis-ci.org/com.github.liaochong/spring-boot-starter-converter.svg)](https://travis-ci.org/com.github.liaochong/spring-boot-starter-converter)
-[![Coverage Status](https://coveralls.io/repos/github/liaochong/spring-boot-starter-converter/badge.svg?branch=master)](https://coveralls.io/github/liaochong/spring-boot-starter-converter?branch=master)
+[![Build Status](https://travis-ci.org/liaochong/spring-boot-starter-converter.svg?branch=master)](https://travis-ci.org/liaochong/spring-boot-starter-converter)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.liaochong/spring-boot-starter-converter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.liaochong/spring-boot-starter-converter)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -26,7 +25,7 @@ Maven 依赖
 <dependency>
     <groupId>com.github.liaochong</groupId>
     <artifactId>spring-boot-starter-converter</artifactId>
-    <version>maven 官方最新版本为准</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 
@@ -95,10 +94,10 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 ```
 配置 | Configuration
 --------------------
-1. （可选-Optional）bean.conversion.scan-packages：设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
-2. （可选-Optional）bean.conversion.only-scan-static-method：设置是否只扫描静态方法，如 `bean.conversion.only-scan-static-method=true`，若不设置，默认为 `false`；
-3. （可选-Optional）bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
-4. （可选-Optional）bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时项目启动过程抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
+1. （可选-OPTIONAL）bean.conversion.scan-packages：设置扫描路径，支持多个路径，如 `bean.conversion.scan-packages=com.test.core,com.test.biz.dao`，以英文“,”分隔，若不设置，`默认全局扫描`；
+2. （可选-OPTIONAL）bean.conversion.only-scan-static-method：设置是否只扫描静态方法，如 `bean.conversion.only-scan-static-method=true`，若不设置，默认为 `false`；
+3. （可选-OPTIONAL）bean.conversion.only-scan-non-static-method：设置是否只扫描非静态方法，如 `bean.conversion.only-scan-non-static-method=true`，若不设置，默认为 `false`；
+4. （可选-OPTIONAL）bean.conversion.is-strict-mode：设置是否启用严格模式，如`bean.conversion.is-strict-mode=true`，严格模式下，当不存在任何转换方法时项目启动过程抛出异常，否则，当不存在任何转换方法时只会在运行时使用抛出异常，若不设置，默认为 `false`；
 
 接口 | Interface
 -------------------
@@ -109,9 +108,9 @@ List<UserBO> users = BeanConverter.parallelConvert(list , UserBO.class);
 3 | `public static <E, T> List<E> nonNullConvert(List<T> source, Class<E> targetClass)` | 列表Beans非空（过滤NULL对象）转换
 4 | `public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass)`| 列表Beans并行转换
 5 | `public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass)` | 列表Beans非空（过滤NULL对象）并行转换
-6 | `public static <E, T, G extends RuntimeException> E convertIfNullThrow(T source, Class<E> targetClass,Supplier<G> supplier)` | 单个Bean转换，如果转换对象为NULL，抛出指定异常
-7 | `public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,Supplier<G> supplier)` | 列表Beans转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常
-8 | `public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,Class<E> targetClass, Supplier<G> supplier)` | 列表Beans并行转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常
+6 | `public static <E, T, G extends RuntimeException> E convertIfNullThrow(T source, Class<E> targetClass,Supplier<G> supplier)` | 单个Bean转换，如果转换对象为NULL，抛出指定异常，如果未指定异常（NULL），则效果同convert
+7 | `public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,Supplier<G> supplier)` | 列表Beans转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常，如果未指定异常（NULL），则效果同convert
+8 | `public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,Class<E> targetClass, Supplier<G> supplier)` | 列表Beans并行转换，如果`全部`或`存在`转换对象为NULL，抛出指定异常，如果未指定异常（NULL），则效果同parallelConvert
 
 
 异常 | Exception
