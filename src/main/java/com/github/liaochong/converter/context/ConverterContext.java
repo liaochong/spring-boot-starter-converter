@@ -64,7 +64,7 @@ public final class ConverterContext {
 
         log.info("Check user-defined configuration");
         checkProperties(converterProperties);
-        log.info("start initialize conversion environment");
+        log.info("Start initialize conversion environment");
         // 开启转换上下文标志
         isDisable = false;
         if (!converterProperties.isOnlyScanNonStaticMethod()) {
@@ -78,7 +78,7 @@ public final class ConverterContext {
         BooleanValidator.ifTrueThrow(isStrictFail, () -> NoConverterException.of("There is no any converter exist"));
 
         isInitialized = true;
-        log.info("conversion environment initialization completed");
+        log.info("Conversion environment initialization completed");
     }
 
     /**
@@ -177,7 +177,7 @@ public final class ConverterContext {
             throw NonUniqueConverterException.of(message);
         }
 
-        log.info("mapped \"{" + method.getDeclaringClass().getName() + "." + method.getName() + "}\"");
+        log.info("Mapped \"{" + method.getDeclaringClass().getName() + "." + method.getName() + "}\"");
         Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
