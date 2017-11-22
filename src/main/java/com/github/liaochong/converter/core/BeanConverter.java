@@ -200,7 +200,7 @@ public class BeanConverter {
         if (Objects.isNull(source)) {
             return ifNonNullThrowOrElse(supplier, () -> null);
         }
-        ObjectValidator.ifNullThrow(targetClass, () -> InvalidParameterException.of("targetClass can not be null"));
+        ObjectValidator.ifNullThrow(targetClass, () -> InvalidParameterException.of("TargetClass can not be null"));
 
         Condition condition = Condition.newInstance(source.getClass(), targetClass);
         Handler handler = ConverterContext.getActionHandler(condition);
