@@ -40,7 +40,7 @@ public class ConverterProperties {
     /**
      * 是否为严格模式 如果为严格，则当无任何转换方法时抛出异常
      */
-    boolean isStrictMode = false;
+    boolean strictMode = false;
 
     public void setScanPackages(Set<String> scanPackages) {
         if (CollectionUtils.isNotEmpty(scanPackages)) {
