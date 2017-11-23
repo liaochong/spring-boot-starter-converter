@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.liaochong.converter.annoation.Converter;
 import com.github.liaochong.converter.configuration.ConverterProperties;
 import com.github.liaochong.converter.exception.ConverterDisabledException;
-import com.github.liaochong.converter.exception.IllegalOperationException;
 import com.github.liaochong.converter.exception.InvalidConfigurationException;
 import com.github.liaochong.converter.exception.NoConverterException;
 import com.github.liaochong.converter.exception.NonUniqueConverterException;
@@ -59,8 +58,8 @@ public final class ConverterContext {
      */
     public static void initialize(ConverterProperties converterProperties, Map<String, Object> converterBeans) {
         // 不允许使用该接口手动初始化
-        BooleanValidator.ifTrueThrow(isInitialized, () -> IllegalOperationException
-                .of("It is not allowed to initialize directly with the initialize interface"));
+        BooleanValidator.ifTrueThrow(isInitialized, () -> new UnsupportedOperationException(
+                "It is not allowed to initialize directly with the initialize interface"));
 
         log.info("Check user-defined configuration");
         checkProperties(converterProperties);

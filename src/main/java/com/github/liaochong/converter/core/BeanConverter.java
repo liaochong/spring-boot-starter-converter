@@ -12,7 +12,6 @@ import com.github.liaochong.converter.context.Condition;
 import com.github.liaochong.converter.context.ConverterContext;
 import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
-import com.github.liaochong.converter.exception.InvalidParameterException;
 import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
 
 /**
@@ -200,7 +199,7 @@ public class BeanConverter {
         if (Objects.isNull(source)) {
             return ifNonNullThrowOrElse(supplier, () -> null);
         }
-        ObjectValidator.ifNullThrow(targetClass, () -> InvalidParameterException.of("TargetClass can not be null"));
+        ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
 
         Condition condition = Condition.newInstance(source.getClass(), targetClass);
         Handler handler = ConverterContext.getActionHandler(condition);

@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import com.github.liaochong.converter.configuration.ConverterProperties;
 import com.github.liaochong.converter.context.ConverterContext;
-import com.github.liaochong.converter.exception.InvalidParameterException;
 import com.github.liaochong.ratel.tools.core.builder.CollectionBuilder;
 
 /**
@@ -80,7 +79,7 @@ public class BeanConverterTest {
     @Test
     public void testParallelConvertIfNullThrow() throws Exception {
         List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
-                () -> InvalidParameterException.of("xx"));
+                () -> new NullPointerException("xx"));
     }
 
     /**
