@@ -1,5 +1,6 @@
 package com.github.liaochong.converter.core;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -186,6 +187,8 @@ public class BeanConverter {
     /**
      * 单个Bean转换
      * 
+     * @throws ConvertException 转换异常
+     *
      * @param source 被转换对象
      * @param targetClass 需要转换到的类型
      * @param supplier 异常操作
@@ -205,8 +208,8 @@ public class BeanConverter {
         Handler handler = ConverterContext.getActionHandler(condition);
         try {
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
-        } catch (Exception e) {
-            throw ConvertException.of(e);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw ConvertException.of("Call method failed", e);
         }
     }
 
