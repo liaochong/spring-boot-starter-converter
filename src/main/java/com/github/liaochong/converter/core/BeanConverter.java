@@ -209,7 +209,7 @@ public class BeanConverter {
         try {
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw ConvertException.of("Call method failed", e);
+            throw ConvertException.of("Call method \"" + handler.getMethod() + "\" failed", e);
         }
     }
 
