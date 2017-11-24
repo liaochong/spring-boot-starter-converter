@@ -25,7 +25,7 @@ Maven 依赖
 <dependency>
     <groupId>com.github.liaochong</groupId>
     <artifactId>spring-boot-starter-converter</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
