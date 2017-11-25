@@ -176,7 +176,8 @@ public final class ConverterContext {
             throw NonUniqueConverterException.of(message);
         }
 
-        log.info("Mapped \"{" + method.getDeclaringClass().getName() + "." + method.getName() + "}\"");
+        log.info("Mapped \"{sourceClass = " + condition.getSourceClass() + ",targetClass = " + returnType + "\"} onto "
+                + method);
         Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
