@@ -1,5 +1,6 @@
 package com.github.liaochong.converter.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -8,8 +9,6 @@ import org.junit.Test;
 
 import com.github.liaochong.converter.configuration.ConverterProperties;
 import com.github.liaochong.converter.context.ConverterContext;
-import com.github.liaochong.converter.exception.InvalidParameterException;
-import com.github.liaochong.ratel.tools.core.builder.CollectionBuilder;
 
 /**
  * BeanConverter Tester.
@@ -25,10 +24,9 @@ import com.github.liaochong.ratel.tools.core.builder.CollectionBuilder;
  */
 public class BeanConverterTest {
 
-    private static List<UserDO> list;
+    private static List<UserDO> list = new ArrayList<>();
 
-    @Before
-    public void before() throws Exception {
+    static {
         ConverterContext.initialize(new ConverterProperties(), null);
 
         UserDO use1 = new UserDO();
@@ -41,7 +39,13 @@ public class BeanConverterTest {
         use2.setName("222");
         use2.setMan(false);
 
-        list = CollectionBuilder.arrayList(use1, use2, null);
+        list.add(use1);
+        list.add(use2);
+    }
+
+    @Before
+    public void before() throws Exception {
+
     }
 
     @After
@@ -55,6 +59,7 @@ public class BeanConverterTest {
      */
     @Test
     public void testNonNullConvert() throws Exception {
+        list.add(null);
         List<UserBO> users = BeanConverter.nonNullConvert(list, UserBO.class);
         assert users.size() == 2;
 
@@ -68,7 +73,7 @@ public class BeanConverterTest {
     @Test
     public void testParallelConvert() throws Exception {
         List<UserBO> users = BeanConverter.parallelConvert(list, UserBO.class);
-        assert users.size() == 3;
+        assert users.size() == 2;
     }
 
     /**
@@ -80,18 +85,7 @@ public class BeanConverterTest {
     @Test
     public void testParallelConvertIfNullThrow() throws Exception {
         List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
-                () -> InvalidParameterException.of("xx"));
-    }
-
-    /**
-     * 
-     * Method: parallelConvertList(List<T> source, Class<E> targetClass, Supplier<G>
-     * supplier)
-     * 
-     */
-    @Test
-    public void testParallelConvertList() throws Exception {
-        // TODO: Test goes here...
+                () -> new NullPointerException("xx"));
     }
 
     /**
@@ -101,26 +95,9 @@ public class BeanConverterTest {
      */
     @Test
     public void testNonNullParallelConvert() throws Exception {
+        list.add(null);
         List<UserBO> users = BeanConverter.nonNullParallelConvert(list, UserBO.class);
-        assert users.size() == 3;
-    }
-
-    /**
-     * 
-     * Method: convertBeans(List<T> source, Class<E> targetClass, Supplier<G>
-     * supplier)
-     * 
-     */
-    @Test
-    public void testConvertBeans() throws Exception {
-        // TODO: Test goes here...
-        /*
-         * try { Method method = BeanConverter.getClass().getMethod("convertBeans",
-         * List<T>.class, Class<E>.class, Supplier<G>.class);
-         * method.setAccessible(true); method.invoke(<Object>, <Parameters>); }
-         * catch(NoSuchMethodException e) { } catch(IllegalAccessException e) { }
-         * catch(InvocationTargetException e) { }
-         */
+        assert users.size() == 2;
     }
 
 }

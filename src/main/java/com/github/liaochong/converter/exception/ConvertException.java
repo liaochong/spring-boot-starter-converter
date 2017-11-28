@@ -27,4 +27,9 @@ public class ConvertException extends RuntimeException {
     public static ConvertException of(Throwable cause) {
         return new ConvertException(cause);
     }
+
+    public static ConvertException of(String message, Throwable cause) {
+        return new ConvertException(message, cause);
+    }
+
 }
