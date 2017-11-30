@@ -8,7 +8,7 @@ spring-boot-starter-converter 是一款为简化DO、BO、DTO等Bean之间转换
 版本支持 | Support Version
 ------------------
 
-- 0.0.x - only support for Java 8+,Spring Boot
+- All version - only support for Java 8+,Spring Boot
 
 优点 | Advantages
 ------------------
