@@ -31,10 +31,11 @@ Maven 依赖
 
 使用条件 | Condition
 ------------------
-1. 转换方法必须为 `public` 修饰符修饰，否则，不会被注册；
-2. 转换方法只能有一个参数入参，多个参数的方法不会被注册；
-3. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会在启动阶段抛出异常-`NonUniqueConverterException`； 
-4. 必须使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter，否则starter不会进行相应的初始化工作；
+1. 必须使用注解 `com.github.liaochong.converter.annoation.EnableConverter` 标明启用converter-starter，否则starter不会进行相应的初始化工作；
+2. 必须使用注解 `com.github.liaochong.converter.annoation.Converter` 标明转换方法所在的转换类，否则转换方法不会被注册；
+3. 转换方法必须为 `public` 修饰符修饰，否则，不会被注册；
+4. 转换方法只能有一个参数入参，多个参数的方法不会被注册；
+5. 同一类型的参数、返回类型只能有一个注册方法，如有多个，会在启动阶段抛出异常-`NonUniqueConverterException`； 
 
 示例 | Example
 ------------------
