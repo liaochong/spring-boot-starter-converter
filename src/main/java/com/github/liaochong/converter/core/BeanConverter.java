@@ -34,7 +34,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) {
-        return convertBeans(source, targetClass, null, false);
+        return convertBeans(source, targetClass, null, false, false);
     }
 
     /**
@@ -50,7 +50,7 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,
             Supplier<G> exceptionSupplier) {
-        return convertBeans(source, targetClass, exceptionSupplier, false);
+        return convertBeans(source, targetClass, exceptionSupplier, false, false);
     }
 
     /**
@@ -63,33 +63,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> nonNullConvert(List<T> source, Class<E> targetClass) {
-        return convertBeans(source, targetClass, null, true);
-    }
-
-    /**
-     * 集合转换
-     *
-     * @param source 需要转换的集合
-     * @param targetClass 需要转换到的类型
-     * @param exceptionSupplier 异常操作
-     * @param nonNullFilter 是否非空过滤
-     * @param <E> 转换后的类型
-     * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
-     * @return 结果
-     */
-    private static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier, boolean nonNullFilter) {
-        ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
-        if (CollectionUtils.isEmpty(source)) {
-            return ifNonNullThrowOrElse(exceptionSupplier, Collections::emptyList);
-        }
-        Stream<T> stream = source.stream();
-        if (nonNullFilter) {
-            stream = stream.filter(Objects::nonNull);
-        }
-        return stream.map(convertedObj -> convertBean(convertedObj, targetClass, exceptionSupplier))
-                .collect(Collectors.toList());
+        return convertBeans(source, targetClass, null, true, false);
     }
 
     /**
@@ -102,7 +76,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
-        return parallelConvertBeans(source, targetClass, null, false);
+        return convertBeans(source, targetClass, null, false, true);
     }
 
     /**
@@ -118,7 +92,7 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,
             Class<E> targetClass, Supplier<G> exceptionSupplier) {
-        return parallelConvertBeans(source, targetClass, exceptionSupplier, false);
+        return convertBeans(source, targetClass, exceptionSupplier, false, true);
     }
 
     /**
@@ -131,28 +105,36 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass) {
-        return parallelConvertBeans(source, targetClass, null, true);
+        return convertBeans(source, targetClass, null, true, true);
     }
 
     /**
-     * 列表并行转换
-     * 
+     * 集合转换
+     *
      * @param source 需要转换的集合
      * @param targetClass 需要转换到的类型
      * @param exceptionSupplier 异常操作
      * @param nonNullFilter 是否非空过滤
+     * @param parallelConvert 是否为并行转换
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
      * @param <G> 异常返回类型
      * @return 结果
      */
-    private static <E, T, G extends RuntimeException> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier, boolean nonNullFilter) {
+    private static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
+            Supplier<G> exceptionSupplier, boolean nonNullFilter, boolean parallelConvert) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (CollectionUtils.isEmpty(source)) {
             return ifNonNullThrowOrElse(exceptionSupplier, Collections::emptyList);
         }
-        Stream<T> stream = source.parallelStream();
+        // 若异常提供者不为NULL，则先校验是否存在NULL对象，存在则抛出异常
+        if (Objects.nonNull(exceptionSupplier)) {
+            Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
+            stream.filter(Objects::isNull).findAny().ifPresent(ele -> {
+                throw exceptionSupplier.get();
+            });
+        }
+        Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
         if (nonNullFilter) {
             stream = stream.filter(Objects::nonNull);
         }
