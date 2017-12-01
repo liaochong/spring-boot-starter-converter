@@ -18,6 +18,9 @@ spring-boot-starter-converter 是一款为简化DO、BO、DTO等Bean之间转换
 - **转换时无需记住转换方法名称**：直接使用如BeanConverter.convert(source,target.class)这样的方式转换，无需关心转换方法的名称；
 - **自动完成列表类型转换**：不必手动创建列表类型转换方法，converter会自动帮你完成，可自行选择是否并行转换；
 - **支持非静态方法**：支持非静态转换方法，避免手动引入Bean，简化代码；
+- **可过滤列表中NULL对象**：使用前缀为 `nonNull`的方法，会过滤掉列表中NULL对象，无需手动过滤；
+- **可针对NULL对象抛出异常**：使用后缀为 `IfNullThrow`的方法，当出现转换对象或者转换列表中含有NULL对象时抛出指定异常；
+- **去除NULL判断**：默认情况下，当转换对象为NULL、转换列表为NULL或为空时，返回NULL或者空列表，无需在转换方法中进行NULL判断；
 
 Maven 依赖
 ------------------
