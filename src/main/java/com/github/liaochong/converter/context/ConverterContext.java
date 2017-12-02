@@ -76,7 +76,7 @@ public final class ConverterContext {
         BooleanValidator.ifTrueThrow(isInitialized, () -> new UnsupportedOperationException(
                 "It is not allowed to initialize directly with the initialize interface"));
 
-        log.info("Check user-defined configuration");
+        log.info("Checkout configurations");
         checkProperties(converterProperties);
         log.info("Start initialize conversion environment");
         // 开启转换上下文标志
