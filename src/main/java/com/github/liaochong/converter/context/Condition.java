@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Condition {
+class Condition {
 
     Class<?> sourceClass;
 
@@ -30,7 +30,7 @@ public class Condition {
      * @param targetClass 目标类
      * @return Condition
      */
-    public static Condition newInstance(Class<?> sourceClass, Class<?> targetClass) {
+    static Condition newInstance(Class<?> sourceClass, Class<?> targetClass) {
         return new Condition(sourceClass, targetClass);
     }
 }

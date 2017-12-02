@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import com.github.liaochong.converter.context.Condition;
 import com.github.liaochong.converter.context.ConverterContext;
 import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
@@ -138,7 +137,9 @@ public class BeanConverter {
         if (nonNullFilter) {
             stream = stream.filter(Objects::nonNull);
         }
-        return stream.map(convertedObj -> convertBean(convertedObj, targetClass, exceptionSupplier))
+        // 一次性获取，避免每次转换都要查找导致的额外消耗
+        Handler handler = ConverterContext.getActionHandler(source.getClass(), targetClass);
+        return stream.map(convertedObj -> convertBean(convertedObj, targetClass, handler, exceptionSupplier))
                 .collect(Collectors.toList());
     }
 
@@ -191,8 +192,33 @@ public class BeanConverter {
         if (Objects.isNull(source)) {
             return ifNonNullThrowOrElse(exceptionSupplier, () -> null);
         }
-        Condition condition = Condition.newInstance(source.getClass(), targetClass);
-        Handler handler = ConverterContext.getActionHandler(condition);
+        Handler handler = ConverterContext.getActionHandler(source.getClass(), targetClass);
+        try {
+            return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw ConvertException.of("Call method \"" + handler.getMethod() + "\" failed", e);
+        }
+    }
+
+    /**
+     * 单个Bean转换
+     *
+     * @throws ConvertException 转换异常
+     *
+     * @param source 被转换对象
+     * @param targetClass 需要转换到的类型
+     * @param handler 转换处理者
+     * @param exceptionSupplier 异常操作
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @param <G> 异常返回类型
+     * @return 结果
+     */
+    private static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass, Handler handler,
+            Supplier<G> exceptionSupplier) {
+        if (Objects.isNull(source)) {
+            return ifNonNullThrowOrElse(exceptionSupplier, () -> null);
+        }
         try {
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (IllegalAccessException | InvocationTargetException e) {

@@ -183,14 +183,17 @@ public final class ConverterContext {
     }
 
     /**
-     * 根据条件获取对应的handler
+     * 根据源类以及目标类获取对应的handler
      * 
-     * @param condition 条件
+     * @param sourceClass 源类
+     * @param targetClass 目标类
      * @return handler
      */
-    public static Handler getActionHandler(Condition condition) {
+    public static Handler getActionHandler(Class<?> sourceClass, Class<?> targetClass) {
         BooleanValidator.ifTrueThrow(isDisable,
                 () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
+
+        Condition condition = Condition.newInstance(sourceClass, targetClass);
         Handler handler = ACTION_MAP.get(condition);
         ObjectValidator.ifNullThrow(handler,
                 () -> NoConverterException.of("The conversion method of matching \"" + condition + "\" was not found"));
