@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.github.liaochong.converter.configuration.ConverterProperties;
 import com.github.liaochong.converter.context.ConverterContext;
+import com.github.liaochong.converter.exception.ConvertException;
 
 /**
  * BeanConverter Tester.
@@ -33,11 +34,13 @@ public class BeanConverterTest {
         use1.setAge(34);
         use1.setName("1111");
         use1.setMan(true);
+        use1.setSex("男");
 
         UserDO use2 = new UserDO();
         use2.setAge(55);
         use2.setName("222");
         use2.setMan(false);
+        use2.setSex("女");
 
         list.add(use1);
         list.add(use2);
@@ -52,47 +55,40 @@ public class BeanConverterTest {
     public void after() throws Exception {
     }
 
-    /**
-     * 
-     * Method: nonNullConvert(List<T> source, Class<E> targetClass)
-     * 
-     */
+    @Test
+    public void testConvert() throws Exception {
+        List<UserBO> users = BeanConverter.convert(list, UserBO.class);
+        assert users.size() == 2;
+    }
+
+    @Test
+    public void testConvertIfNullThrow() throws Exception {
+        List<UserBO> users = BeanConverter.convertIfNullThrow(list, UserBO.class, () -> new ConvertException("xx"));
+        System.out.println("");
+    }
+
     @Test
     public void testNonNullConvert() throws Exception {
         list.add(null);
         List<UserBO> users = BeanConverter.nonNullConvert(list, UserBO.class);
         assert users.size() == 2;
-
     }
 
-    /**
-     * 
-     * Method: parallelConvert(List<T> source, Class<E> targetClass)
-     * 
-     */
     @Test
     public void testParallelConvert() throws Exception {
+        list.add(null);
         List<UserBO> users = BeanConverter.parallelConvert(list, UserBO.class);
         assert users.size() == 2;
     }
 
-    /**
-     * 
-     * Method: parallelConvertIfNullThrow(List<T> source, Class<E> targetClass,
-     * Supplier<G> supplier)
-     * 
-     */
     @Test
     public void testParallelConvertIfNullThrow() throws Exception {
+        list.add(null);
         List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
-                () -> new NullPointerException("xx"));
+                () -> new ConvertException("xx"));
+        System.out.println("");
     }
 
-    /**
-     * 
-     * Method: nonNullParallelConvert(List<T> source, Class<E> targetClass)
-     * 
-     */
     @Test
     public void testNonNullParallelConvert() throws Exception {
         list.add(null);

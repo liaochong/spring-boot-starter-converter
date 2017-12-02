@@ -19,7 +19,7 @@ public class UserConverter {
         result.setAge(user.getAge());
         result.setName(user.getName());
         result.setMan(true);
-        result.setSex("xxxx");
+        result.setSex(user.getSex());
         return result;
     }
 
