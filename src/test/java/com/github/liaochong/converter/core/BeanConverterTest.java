@@ -82,7 +82,6 @@ public class BeanConverterTest {
 
     @Test
     public void testParallelConvertIfNullThrow() throws Exception {
-        list.add(null);
         List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
                 () -> new ConvertException("xx"));
         System.out.println("");
