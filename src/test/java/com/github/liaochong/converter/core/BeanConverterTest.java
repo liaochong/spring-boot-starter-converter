@@ -76,7 +76,6 @@ public class BeanConverterTest {
 
     @Test
     public void testParallelConvert() throws Exception {
-        list.add(null);
         List<UserBO> users = BeanConverter.parallelConvert(list, UserBO.class);
         assert users.size() == 2;
     }
