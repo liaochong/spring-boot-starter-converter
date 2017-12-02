@@ -30,7 +30,7 @@ import lombok.experimental.FieldDefaults;
  * 属性对象
  *
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

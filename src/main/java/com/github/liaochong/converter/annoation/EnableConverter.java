@@ -27,7 +27,7 @@ import com.github.liaochong.converter.configuration.ConverterAutoConfiguration;
 
 /**
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

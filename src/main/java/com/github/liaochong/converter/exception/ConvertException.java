@@ -19,7 +19,7 @@ package com.github.liaochong.converter.exception;
  * 转换异常
  * 
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 public class ConvertException extends RuntimeException {
 

@@ -17,7 +17,7 @@ package com.github.liaochong.converter.exception;
 
 /**
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 public class InvalidConfigurationException extends RuntimeException {
 

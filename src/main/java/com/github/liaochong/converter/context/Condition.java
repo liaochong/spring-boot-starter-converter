@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
  * 转换条件
  *
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

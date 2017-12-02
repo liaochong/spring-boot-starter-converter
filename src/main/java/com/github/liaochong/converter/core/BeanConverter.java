@@ -35,7 +35,7 @@ import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
  * Bean 转换器
  *
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 public class BeanConverter {
 

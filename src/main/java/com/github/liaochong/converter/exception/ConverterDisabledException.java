@@ -19,7 +19,7 @@ package com.github.liaochong.converter.exception;
  * 转换器不可用异常
  *
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 public class ConverterDisabledException extends RuntimeException {
 

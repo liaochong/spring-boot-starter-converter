@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
  * 转换上下文
  *
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 @Slf4j
 public final class ConverterContext {
