@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -133,12 +134,17 @@ public class BeanConverter {
                 throw exceptionSupplier.get();
             });
         }
+        // 一次性获取，避免每次转换都要查找导致的额外消耗
+        Optional<T> sourceElement = source.stream().filter(Objects::nonNull).findAny();
+        if (!sourceElement.isPresent()) {
+            return Collections.emptyList();
+        }
+        Handler handler = ConverterContext.getActionHandler(sourceElement.get().getClass(), targetClass);
+
         Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
         if (nonNullFilter) {
             stream = stream.filter(Objects::nonNull);
         }
-        // 一次性获取，避免每次转换都要查找导致的额外消耗
-        Handler handler = ConverterContext.getActionHandler(source.getClass(), targetClass);
         return stream.map(convertedObj -> convertBean(convertedObj, targetClass, handler, exceptionSupplier))
                 .collect(Collectors.toList());
     }
