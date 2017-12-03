@@ -56,7 +56,6 @@ class BeansConvertStrategy {
     public static <E, T> List<E> convertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter,
             boolean parallelConvert) {
         return convertBeans(source, targetClass, null, nonNullFilter, parallelConvert);
-
     }
 
     /**
