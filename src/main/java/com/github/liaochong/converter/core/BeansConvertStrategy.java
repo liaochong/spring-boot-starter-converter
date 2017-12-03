@@ -74,6 +74,7 @@ class BeansConvertStrategy {
             return Collections.emptyList();
         }
         Handler handler = ConverterContext.getActionHandler(sourceElement.get().getClass(), targetClass);
+        log.info("Call method \"" + handler.getMethod());
 
         Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
         if (nonNullFilter) {
