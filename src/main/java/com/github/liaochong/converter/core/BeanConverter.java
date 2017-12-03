@@ -174,7 +174,6 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T source, Class<E> targetClass) {
-        ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         return convertBean(source, targetClass, null);
     }
 
@@ -191,7 +190,6 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> E convertIfNullThrow(T source, Class<E> targetClass,
             Supplier<G> exceptionSupplier) {
-        ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         return convertBean(source, targetClass, exceptionSupplier);
     }
 
@@ -210,6 +208,7 @@ public class BeanConverter {
      */
     private static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass,
             Supplier<G> exceptionSupplier) {
+        ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (Objects.isNull(source)) {
             return ifNonNullThrowOrElse(exceptionSupplier, () -> null);
         }
