@@ -191,8 +191,8 @@ public final class ConverterContext {
             throw NonUniqueConverterException.of(message);
         }
 
-        log.info("Mapped \"{sourceClass = " + condition.getSourceClass() + ",targetClass = " + returnType + "\"} onto "
-                + method);
+        log.info("Mapped \"{sourceClass = {},targetClass = {}}\" onto {}", condition.getSourceClass(), returnType,
+                method);
         Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }

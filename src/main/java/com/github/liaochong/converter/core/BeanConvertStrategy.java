@@ -55,7 +55,7 @@ class BeanConvertStrategy {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, () -> null);
         }
         Handler handler = ConverterContext.getActionHandler(source.getClass(), targetClass);
-        log.info("Call method \"" + handler.getMethod());
+        log.info("Call method \"{}\"", handler.getMethod());
         try {
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (IllegalAccessException | InvocationTargetException e) {
