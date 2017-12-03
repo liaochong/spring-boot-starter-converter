@@ -36,7 +36,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, null, false, false);
+        return BeansConvertStrategy.convertBeans(source, targetClass, false, false);
     }
 
     /**
@@ -65,7 +65,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> nonNullConvert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, null, true, false);
+        return BeansConvertStrategy.convertBeans(source, targetClass, true, false);
     }
 
     /**
@@ -78,7 +78,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, null, false, true);
+        return BeansConvertStrategy.convertBeans(source, targetClass, false, true);
     }
 
     /**
@@ -107,7 +107,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, null, true, true);
+        return BeansConvertStrategy.convertBeans(source, targetClass, true, true);
     }
 
     /**
@@ -120,7 +120,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> E convert(T source, Class<E> targetClass) {
-        return BeanConvertStrategy.convertBean(source, targetClass, null);
+        return BeanConvertStrategy.convertBean(source, targetClass);
     }
 
     /**

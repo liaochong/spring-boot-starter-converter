@@ -36,6 +36,22 @@ import lombok.extern.slf4j.Slf4j;
 class BeanConvertStrategy {
 
     /**
+     * 单个Bean转换，无指定异常提供
+     *
+     * @throws ConvertException 转换异常
+     *
+     * @param source 被转换对象
+     * @param targetClass 需要转换到的类型
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @param <G> 异常返回类型
+     * @return 结果
+     */
+    public static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass) {
+        return convertBean(source, targetClass, null);
+    }
+
+    /**
      * 单个Bean转换
      *
      * @throws ConvertException 转换异常

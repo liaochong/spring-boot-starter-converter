@@ -43,6 +43,24 @@ import lombok.extern.slf4j.Slf4j;
 class BeansConvertStrategy {
 
     /**
+     * 集合转换，无指定异常提供
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param nonNullFilter 是否非空过滤
+     * @param parallelConvert 是否为并行转换
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @param <G> 异常返回类型
+     * @return 结果
+     */
+    public static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
+            boolean nonNullFilter, boolean parallelConvert) {
+        return convertBeans(source, targetClass, null, nonNullFilter, parallelConvert);
+
+    }
+
+    /**
      * 集合转换
      *
      * @param source 需要转换的集合
