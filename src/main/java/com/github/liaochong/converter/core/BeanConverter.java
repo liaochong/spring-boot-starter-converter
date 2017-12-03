@@ -39,7 +39,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> convert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, false, false);
+        return BeansConvertStrategy.convertBeans(source, targetClass, false);
     }
 
     /**
@@ -55,7 +55,7 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,
             Supplier<G> exceptionSupplier) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, exceptionSupplier, false, false);
+        return BeansConvertStrategy.convertBeans(source, targetClass, exceptionSupplier, false);
     }
 
     /**
@@ -68,7 +68,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> nonNullConvert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, true, false);
+        return BeansConvertStrategy.convertBeans(source, targetClass, true);
     }
 
     /**
@@ -81,7 +81,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> parallelConvert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, false, true);
+        return BeansConvertStrategy.parallelConvertBeans(source, targetClass, false);
     }
 
     /**
@@ -97,7 +97,7 @@ public class BeanConverter {
      */
     public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,
             Class<E> targetClass, Supplier<G> exceptionSupplier) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, exceptionSupplier, false, true);
+        return BeansConvertStrategy.parallelConvertBeans(source, targetClass, exceptionSupplier, false);
     }
 
     /**
@@ -110,7 +110,7 @@ public class BeanConverter {
      * @return 结果
      */
     public static <E, T> List<E> nonNullParallelConvert(List<T> source, Class<E> targetClass) {
-        return BeansConvertStrategy.convertBeans(source, targetClass, true, true);
+        return BeansConvertStrategy.parallelConvertBeans(source, targetClass, true);
     }
 
     /**

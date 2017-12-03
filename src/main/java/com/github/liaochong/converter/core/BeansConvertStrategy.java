@@ -48,14 +48,58 @@ class BeansConvertStrategy {
      * @param source 需要转换的集合
      * @param targetClass 需要转换到的类型
      * @param nonNullFilter 是否非空过滤
-     * @param parallelConvert 是否为并行转换
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
      * @return 结果
      */
-    public static <E, T> List<E> convertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter,
-            boolean parallelConvert) {
-        return convertBeans(source, targetClass, null, nonNullFilter, parallelConvert);
+    public static <E, T> List<E> convertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter) {
+        return convertBeans(source, targetClass, null, source::stream, nonNullFilter);
+    }
+
+    /**
+     * 集合转换，无指定异常提供
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param exceptionSupplier 异常操作
+     * @param nonNullFilter 是否非空过滤
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
+            Supplier<G> exceptionSupplier, boolean nonNullFilter) {
+        return convertBeans(source, targetClass, exceptionSupplier, source::stream, nonNullFilter);
+    }
+
+    /**
+     * 集合并行转换，无指定异常提供
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param nonNullFilter 是否非空过滤
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter) {
+        return convertBeans(source, targetClass, null, source::parallelStream, nonNullFilter);
+    }
+
+    /**
+     * 集合并行转换，无指定异常提供
+     *
+     * @param source 需要转换的集合
+     * @param targetClass 需要转换到的类型
+     * @param exceptionSupplier 异常操作
+     * @param nonNullFilter 是否非空过滤
+     * @param <E> 转换后的类型
+     * @param <T> 转换前的类型
+     * @return 结果
+     */
+    public static <E, T, G extends RuntimeException> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass,
+            Supplier<G> exceptionSupplier, boolean nonNullFilter) {
+        return convertBeans(source, targetClass, exceptionSupplier, source::parallelStream, nonNullFilter);
     }
 
     /**
@@ -64,23 +108,22 @@ class BeansConvertStrategy {
      * @param source 需要转换的集合
      * @param targetClass 需要转换到的类型
      * @param exceptionSupplier 异常操作
+     * @param streamSupplier 流
      * @param nonNullFilter 是否非空过滤
-     * @param parallelConvert 是否为并行转换
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
      * @param <G> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier, boolean nonNullFilter, boolean parallelConvert) {
+    private static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
+            Supplier<G> exceptionSupplier, Supplier<Stream<T>> streamSupplier, boolean nonNullFilter) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (CollectionUtils.isEmpty(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, Collections::emptyList);
         }
         // 若异常提供者不为NULL，则先校验是否存在NULL对象，存在则抛出异常
         if (Objects.nonNull(exceptionSupplier)) {
-            Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
-            stream.filter(Objects::isNull).findAny().ifPresent(ele -> {
+            streamSupplier.get().filter(Objects::isNull).findAny().ifPresent(ele -> {
                 throw exceptionSupplier.get();
             });
         }
@@ -92,7 +135,7 @@ class BeansConvertStrategy {
         Handler handler = ConverterContext.getActionHandler(sourceElement.get().getClass(), targetClass);
         log.info("Call method \"{}\"", handler.getMethod());
 
-        Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
+        Stream<T> stream = streamSupplier.get();
         if (nonNullFilter) {
             stream = stream.filter(Objects::nonNull);
         }
