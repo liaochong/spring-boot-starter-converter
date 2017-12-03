@@ -51,11 +51,10 @@ class BeansConvertStrategy {
      * @param parallelConvert 是否为并行转换
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
-            boolean nonNullFilter, boolean parallelConvert) {
+    public static <E, T> List<E> convertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter,
+            boolean parallelConvert) {
         return convertBeans(source, targetClass, null, nonNullFilter, parallelConvert);
 
     }

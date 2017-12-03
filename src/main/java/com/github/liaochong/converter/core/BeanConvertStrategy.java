@@ -44,10 +44,9 @@ class BeanConvertStrategy {
      * @param targetClass 需要转换到的类型
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass) {
+    public static <E, T> E convertBean(T source, Class<E> targetClass) {
         return convertBean(source, targetClass, null);
     }
 
