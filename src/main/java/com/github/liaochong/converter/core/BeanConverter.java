@@ -26,6 +26,9 @@ import java.util.function.Supplier;
  */
 public class BeanConverter {
 
+    private BeanConverter() {
+    }
+
     /**
      * 集合转换
      *
