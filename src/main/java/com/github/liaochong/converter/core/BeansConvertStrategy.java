@@ -123,9 +123,10 @@ class BeansConvertStrategy {
         }
         // 若异常提供者不为NULL，则先校验是否存在NULL对象，存在则抛出异常
         if (Objects.nonNull(exceptionSupplier)) {
-            streamSupplier.get().filter(Objects::isNull).findAny().ifPresent(ele -> {
+            boolean hasNullObj = streamSupplier.get().anyMatch(Objects::isNull);
+            if (hasNullObj) {
                 throw exceptionSupplier.get();
-            });
+            }
         }
         // 一次性获取，避免每次转换都要查找导致的额外消耗
         Optional<T> sourceElement = source.stream().filter(Objects::nonNull).findAny();
