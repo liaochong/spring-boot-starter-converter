@@ -65,10 +65,11 @@ class BeansConvertStrategy {
      * @param nonNullFilter 是否非空过滤
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier, boolean nonNullFilter) {
+    public static <E, T, X extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
+            Supplier<X> exceptionSupplier, boolean nonNullFilter) {
         return convertBeans(source, targetClass, exceptionSupplier, source::stream, nonNullFilter);
     }
 
@@ -95,10 +96,11 @@ class BeansConvertStrategy {
      * @param nonNullFilter 是否非空过滤
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier, boolean nonNullFilter) {
+    public static <E, T, X extends RuntimeException> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass,
+            Supplier<X> exceptionSupplier, boolean nonNullFilter) {
         return convertBeans(source, targetClass, exceptionSupplier, source::parallelStream, nonNullFilter);
     }
 
@@ -112,11 +114,11 @@ class BeansConvertStrategy {
      * @param nonNullFilter 是否非空过滤
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    private static <E, T, G extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier, Supplier<Stream<T>> streamSupplier, boolean nonNullFilter) {
+    private static <E, T, X extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
+            Supplier<X> exceptionSupplier, Supplier<Stream<T>> streamSupplier, boolean nonNullFilter) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (CollectionUtils.isEmpty(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, Collections::emptyList);
@@ -155,11 +157,11 @@ class BeansConvertStrategy {
      * @param exceptionSupplier 异常操作
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    private static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass, Handler handler,
-            Supplier<G> exceptionSupplier) {
+    private static <E, T, X extends RuntimeException> E convertBean(T source, Class<E> targetClass, Handler handler,
+            Supplier<X> exceptionSupplier) {
         if (Objects.isNull(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, () -> null);
         }

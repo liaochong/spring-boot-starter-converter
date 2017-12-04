@@ -60,11 +60,11 @@ class BeanConvertStrategy {
      * @param exceptionSupplier 异常操作
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> E convertBean(T source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier) {
+    public static <E, T, X extends RuntimeException> E convertBean(T source, Class<E> targetClass,
+            Supplier<X> exceptionSupplier) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (Objects.isNull(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, () -> null);
