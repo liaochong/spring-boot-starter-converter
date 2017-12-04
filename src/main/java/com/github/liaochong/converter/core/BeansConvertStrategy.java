@@ -53,7 +53,7 @@ class BeansConvertStrategy {
      * @return 结果
      */
     public static <E, T> List<E> convertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter) {
-        return convertBeans(source, targetClass, null, source::stream, nonNullFilter);
+        return convertBeans(source, targetClass, null, false, nonNullFilter);
     }
 
     /**
@@ -70,7 +70,7 @@ class BeansConvertStrategy {
      */
     public static <E, T, X extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
             Supplier<X> exceptionSupplier, boolean nonNullFilter) {
-        return convertBeans(source, targetClass, exceptionSupplier, source::stream, nonNullFilter);
+        return convertBeans(source, targetClass, exceptionSupplier, false, nonNullFilter);
     }
 
     /**
@@ -84,7 +84,7 @@ class BeansConvertStrategy {
      * @return 结果
      */
     public static <E, T> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass, boolean nonNullFilter) {
-        return convertBeans(source, targetClass, null, source::parallelStream, nonNullFilter);
+        return convertBeans(source, targetClass, null, true, nonNullFilter);
     }
 
     /**
@@ -101,7 +101,7 @@ class BeansConvertStrategy {
      */
     public static <E, T, X extends RuntimeException> List<E> parallelConvertBeans(List<T> source, Class<E> targetClass,
             Supplier<X> exceptionSupplier, boolean nonNullFilter) {
-        return convertBeans(source, targetClass, exceptionSupplier, source::parallelStream, nonNullFilter);
+        return convertBeans(source, targetClass, exceptionSupplier, true, nonNullFilter);
     }
 
     /**
@@ -110,7 +110,7 @@ class BeansConvertStrategy {
      * @param source 需要转换的集合
      * @param targetClass 需要转换到的类型
      * @param exceptionSupplier 异常操作
-     * @param streamSupplier 流
+     * @param parallelConvert 是否为并行转换
      * @param nonNullFilter 是否非空过滤
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
@@ -118,14 +118,15 @@ class BeansConvertStrategy {
      * @return 结果
      */
     private static <E, T, X extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
-            Supplier<X> exceptionSupplier, Supplier<Stream<T>> streamSupplier, boolean nonNullFilter) {
+            Supplier<X> exceptionSupplier, boolean parallelConvert, boolean nonNullFilter) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (CollectionUtils.isEmpty(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, Collections::emptyList);
         }
         // 若异常提供者不为NULL，则先校验是否存在NULL对象，存在则抛出异常
         if (Objects.nonNull(exceptionSupplier)) {
-            boolean hasNullObj = streamSupplier.get().anyMatch(Objects::isNull);
+            Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
+            boolean hasNullObj = stream.anyMatch(Objects::isNull);
             if (hasNullObj) {
                 throw exceptionSupplier.get();
             }
@@ -138,7 +139,7 @@ class BeansConvertStrategy {
         Handler handler = ConverterContext.getActionHandler(sourceElement.get().getClass(), targetClass);
         log.info("Call method \"{}\"", handler.getMethod());
 
-        Stream<T> stream = streamSupplier.get();
+        Stream<T> stream = parallelConvert ? source.parallelStream() : source.stream();
         if (nonNullFilter) {
             stream = stream.filter(Objects::nonNull);
         }
