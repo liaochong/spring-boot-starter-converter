@@ -155,12 +155,12 @@ class BeansConvertStrategy {
      * @param targetClass 需要转换到的类型
      * @param handler 转换处理者
      * @param exceptionSupplier 异常操作
-     * @param <E> 转换后的类型
      * @param <T> 转换前的类型
+     * @param <U> 转换后的类型
      * @param <X> 异常返回类型
      * @return 结果
      */
-    private static <E, T, X extends RuntimeException> E convertBean(T source, Class<E> targetClass, Handler handler,
+    private static <T, U, X extends RuntimeException> U convertBean(T source, Class<U> targetClass, Handler handler,
             Supplier<X> exceptionSupplier) {
         if (Objects.isNull(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, () -> null);

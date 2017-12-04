@@ -42,11 +42,11 @@ class BeanConvertStrategy {
      *
      * @param source 被转换对象
      * @param targetClass 需要转换到的类型
-     * @param <E> 转换后的类型
      * @param <T> 转换前的类型
+     * @param <U> 转换后的类型
      * @return 结果
      */
-    public static <E, T> E convertBean(T source, Class<E> targetClass) {
+    public static <T, U> U convertBean(T source, Class<U> targetClass) {
         return convertBean(source, targetClass, null);
     }
 
@@ -58,12 +58,12 @@ class BeanConvertStrategy {
      * @param source 被转换对象
      * @param targetClass 需要转换到的类型
      * @param exceptionSupplier 异常操作
-     * @param <E> 转换后的类型
      * @param <T> 转换前的类型
+     * @param <U> 转换后的类型
      * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, X extends RuntimeException> E convertBean(T source, Class<E> targetClass,
+    public static <T, U, X extends RuntimeException> U convertBean(T source, Class<U> targetClass,
             Supplier<X> exceptionSupplier) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
         if (Objects.isNull(source)) {
