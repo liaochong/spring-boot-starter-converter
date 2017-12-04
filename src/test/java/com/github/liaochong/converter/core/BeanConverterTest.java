@@ -42,8 +42,11 @@ public class BeanConverterTest {
         use2.setMan(false);
         use2.setSex("女");
 
-        list.add(use1);
-        list.add(use2);
+        for (int i = 0; i < 10000; i++) {
+            list.add(use1);
+            list.add(use2);
+        }
+
     }
 
     @Before
@@ -56,9 +59,10 @@ public class BeanConverterTest {
     }
 
     @Test
-    public void testConvert() throws Exception {
-        List<UserBO> users = BeanConverter.convert(list, UserBO.class);
-        assert users.size() == 2;
+    public void testParallelConvertIfNullThrow() throws Exception {
+        List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
+                () -> new ConvertException("xx"));
+        System.out.println("");
     }
 
     @Test
@@ -68,30 +72,23 @@ public class BeanConverterTest {
     }
 
     @Test
+    public void testConvert() throws Exception {
+        List<UserBO> users = BeanConverter.convert(list, UserBO.class);
+    }
+
+    @Test
     public void testNonNullConvert() throws Exception {
-        list.add(null);
         List<UserBO> users = BeanConverter.nonNullConvert(list, UserBO.class);
-        assert users.size() == 2;
     }
 
     @Test
     public void testParallelConvert() throws Exception {
         List<UserBO> users = BeanConverter.parallelConvert(list, UserBO.class);
-        assert users.size() == 2;
-    }
-
-    @Test
-    public void testParallelConvertIfNullThrow() throws Exception {
-        List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
-                () -> new ConvertException("xx"));
-        System.out.println("");
     }
 
     @Test
     public void testNonNullParallelConvert() throws Exception {
-        list.add(null);
         List<UserBO> users = BeanConverter.nonNullParallelConvert(list, UserBO.class);
-        assert users.size() == 2;
     }
 
 }
