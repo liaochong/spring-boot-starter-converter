@@ -31,12 +31,12 @@ public class SupplierUtil {
      *
      * @param exceptionSupplier 异常提供者
      * @param provider 内容提供者
-     * @param <E> 返回值类型
-     * @param <T> 异常类型
+     * @param <T> 返回值类型
+     * @param <X> 异常类型
      * @return 返回值
      */
-    public static <E, T extends RuntimeException> E ifNonNullThrowOrElse(Supplier<T> exceptionSupplier,
-            Supplier<E> provider) {
+    public static <T, X extends RuntimeException> T ifNonNullThrowOrElse(Supplier<X> exceptionSupplier,
+            Supplier<T> provider) {
         if (Objects.nonNull(exceptionSupplier)) {
             throw exceptionSupplier.get();
         } else {
