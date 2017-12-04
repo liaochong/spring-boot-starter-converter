@@ -50,11 +50,11 @@ public class BeanConverter {
      * @param exceptionSupplier 异常操作
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier) {
+    public static <E, T, X extends RuntimeException> List<E> convertIfNullThrow(List<T> source, Class<E> targetClass,
+            Supplier<X> exceptionSupplier) {
         return BeansConvertStrategy.convertBeans(source, targetClass, exceptionSupplier, false);
     }
 
@@ -92,11 +92,11 @@ public class BeanConverter {
      * @param exceptionSupplier 异常操作
      * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,
-            Class<E> targetClass, Supplier<G> exceptionSupplier) {
+    public static <E, T, X extends RuntimeException> List<E> parallelConvertIfNullThrow(List<T> source,
+            Class<E> targetClass, Supplier<X> exceptionSupplier) {
         return BeansConvertStrategy.parallelConvertBeans(source, targetClass, exceptionSupplier, false);
     }
 
@@ -118,11 +118,11 @@ public class BeanConverter {
      *
      * @param source 被转换对象
      * @param targetClass 需要转换到的类型
-     * @param <E> 转换后的类型
      * @param <T> 转换前的类型
+     * @param <U> 转换后的类型
      * @return 结果
      */
-    public static <E, T> E convert(T source, Class<E> targetClass) {
+    public static <T, U> U convert(T source, Class<U> targetClass) {
         return BeanConvertStrategy.convertBean(source, targetClass);
     }
 
@@ -132,13 +132,13 @@ public class BeanConverter {
      * @param source 被转换对象
      * @param targetClass 需要转换到的类型
      * @param exceptionSupplier 异常操作
-     * @param <E> 转换后的类型
      * @param <T> 转换前的类型
-     * @param <G> 异常返回类型
+     * @param <U> 转换后的类型
+     * @param <X> 异常返回类型
      * @return 结果
      */
-    public static <E, T, G extends RuntimeException> E convertIfNullThrow(T source, Class<E> targetClass,
-            Supplier<G> exceptionSupplier) {
+    public static <T, U, X extends RuntimeException> U convertIfNullThrow(T source, Class<U> targetClass,
+            Supplier<X> exceptionSupplier) {
         return BeanConvertStrategy.convertBean(source, targetClass, exceptionSupplier);
     }
 
