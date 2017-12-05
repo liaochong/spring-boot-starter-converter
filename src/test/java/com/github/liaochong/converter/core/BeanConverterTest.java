@@ -25,10 +25,15 @@ import com.github.liaochong.converter.exception.ConvertException;
  */
 public class BeanConverterTest {
 
-    private static List<UserDO> list = new ArrayList<>();
+    private static List<UserDO> list;
 
     static {
         ConverterContext.initialize(new ConverterProperties(), null);
+    }
+
+    @Before
+    public void before() throws Exception {
+        list = new ArrayList<>();
 
         UserDO use1 = new UserDO();
         use1.setAge(34);
@@ -42,53 +47,71 @@ public class BeanConverterTest {
         use2.setMan(false);
         use2.setSex("女");
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             list.add(use1);
             list.add(use2);
         }
-
-    }
-
-    @Before
-    public void before() throws Exception {
-
     }
 
     @After
     public void after() throws Exception {
     }
 
-    @Test
+    @Test(expected = ConvertException.class)
     public void testParallelConvertIfNullThrow() throws Exception {
+        list.add(null);
         List<UserBO> users = BeanConverter.parallelConvertIfNullThrow(list, UserBO.class,
                 () -> new ConvertException("xx"));
-        System.out.println("");
     }
 
-    @Test
+    @Test(expected = ConvertException.class)
     public void testConvertIfNullThrow() throws Exception {
+        list.add(null);
         List<UserBO> users = BeanConverter.convertIfNullThrow(list, UserBO.class, () -> new ConvertException("xx"));
+    }
+
+    @Test
+    public void testConvert() {
+        List<UserBO> users = BeanConverter.convert(list, UserBO.class);
+        assert users.size() == 2000;
+    }
+
+    @Test
+    public void testConvertBean() {
+        UserDO use1 = new UserDO();
+        use1.setAge(34);
+        use1.setName("6666");
+        use1.setMan(true);
+        use1.setSex("男");
+        UserBO userBO = BeanConverter.convert(use1, UserBO.class);
         System.out.println("");
     }
 
-    @Test
-    public void testConvert() throws Exception {
-        List<UserBO> users = BeanConverter.convert(list, UserBO.class);
+    @Test(expected = ConvertException.class)
+    public void testConvertIfNullThrowBean() {
+        UserDO use1 = null;
+        UserBO userBO = BeanConverter.convertIfNullThrow(use1, UserBO.class, () -> new ConvertException("zzz"));
     }
 
     @Test
-    public void testNonNullConvert() throws Exception {
+    public void testNonNullConvert() {
+        list.add(null);
         List<UserBO> users = BeanConverter.nonNullConvert(list, UserBO.class);
+        assert users.size() == 2000;
     }
 
     @Test
-    public void testParallelConvert() throws Exception {
+    public void testParallelConvert() {
+        list.add(null);
         List<UserBO> users = BeanConverter.parallelConvert(list, UserBO.class);
+        assert users.size() == 2001;
     }
 
     @Test
-    public void testNonNullParallelConvert() throws Exception {
+    public void testNonNullParallelConvert() {
+        list.add(null);
         List<UserBO> users = BeanConverter.nonNullParallelConvert(list, UserBO.class);
+        assert users.size() == 2000;
     }
 
 }
