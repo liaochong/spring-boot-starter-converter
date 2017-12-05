@@ -18,4 +18,6 @@ public class UserDO {
 
     boolean isMan;
 
+    String sex;
+
 }

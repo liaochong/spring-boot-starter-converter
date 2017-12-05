@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liaochong.converter.context;
 
 import java.lang.reflect.Method;
@@ -33,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
  * 转换上下文
  *
  * @author liaochong
- * @version V1.0
+ * @version 1.0
  */
 @Slf4j
 public final class ConverterContext {
@@ -61,7 +76,7 @@ public final class ConverterContext {
         BooleanValidator.ifTrueThrow(isInitialized, () -> new UnsupportedOperationException(
                 "It is not allowed to initialize directly with the initialize interface"));
 
-        log.info("Check user-defined configuration");
+        log.info("Checkout configurations");
         checkProperties(converterProperties);
         log.info("Start initialize conversion environment");
         // 开启转换上下文标志
@@ -176,21 +191,24 @@ public final class ConverterContext {
             throw NonUniqueConverterException.of(message);
         }
 
-        log.info("Mapped \"{sourceClass = " + condition.getSourceClass() + ",targetClass = " + returnType + "\"} onto "
-                + method);
+        log.info("Mapped \"{sourceClass = {},targetClass = {}}\" onto {}", condition.getSourceClass(), returnType,
+                method);
         Handler handler = Handler.newInstance(handlerBean, method);
         ACTION_MAP.put(condition, handler);
     }
 
     /**
-     * 根据条件获取对应的handler
+     * 根据源类以及目标类获取对应的handler
      * 
-     * @param condition 条件
+     * @param sourceClass 源类
+     * @param targetClass 目标类
      * @return handler
      */
-    public static Handler getActionHandler(Condition condition) {
+    public static Handler getActionHandler(Class<?> sourceClass, Class<?> targetClass) {
         BooleanValidator.ifTrueThrow(isDisable,
                 () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
+
+        Condition condition = Condition.newInstance(sourceClass, targetClass);
         Handler handler = ACTION_MAP.get(condition);
         ObjectValidator.ifNullThrow(handler,
                 () -> NoConverterException.of("The conversion method of matching \"" + condition + "\" was not found"));
