@@ -143,8 +143,7 @@ class BeansConvertStrategy {
         if (nonNullFilter) {
             stream = stream.filter(Objects::nonNull);
         }
-        return stream.map(convertedObj -> convertBean(convertedObj, targetClass, handler, exceptionSupplier))
-                .collect(Collectors.toList());
+        return stream.map(convertedObj -> convertBean(convertedObj, targetClass, handler)).collect(Collectors.toList());
     }
 
     /**
@@ -155,18 +154,15 @@ class BeansConvertStrategy {
      * @param source 被转换对象
      * @param targetClass 需要转换到的类型
      * @param handler 转换处理者
-     * @param exceptionSupplier 异常操作
      * @param <T> 转换前的类型
      * @param <U> 转换后的类型
-     * @param <X> 异常返回类型
      * @return 结果
      */
-    private static <T, U, X extends RuntimeException> U convertBean(T source, Class<U> targetClass, Handler handler,
-            Supplier<X> exceptionSupplier) {
-        if (Objects.isNull(source)) {
-            return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, () -> null);
-        }
+    private static <T, U> U convertBean(T source, Class<U> targetClass, Handler handler) {
         try {
+            if (Objects.isNull(source)) {
+                return null;
+            }
             return targetClass.cast(handler.getMethod().invoke(handler.getHandler(), source));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw ConvertException.of("Call method \"" + handler.getMethod() + "\" failed", e);
