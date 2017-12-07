@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import com.github.liaochong.converter.context.ConverterContext;
 import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
@@ -120,7 +118,7 @@ class BeansConvertStrategy {
     private static <E, T, X extends RuntimeException> List<E> convertBeans(List<T> source, Class<E> targetClass,
             Supplier<X> exceptionSupplier, boolean parallelConvert, boolean nonNullFilter) {
         ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
-        if (CollectionUtils.isEmpty(source)) {
+        if (Objects.isNull(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, Collections::emptyList);
         }
         // 若异常提供者不为NULL，则先校验是否存在NULL对象，存在则抛出异常
