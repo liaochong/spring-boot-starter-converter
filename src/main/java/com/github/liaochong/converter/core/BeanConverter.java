@@ -24,7 +24,7 @@ import java.util.function.Supplier;
  * @author liaochong
  * @version 1.0
  */
-public class BeanConverter {
+public final class BeanConverter {
 
     private BeanConverter() {
     }
