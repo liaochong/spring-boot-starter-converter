@@ -10,7 +10,7 @@
 
     <groupId>com.github.liaochong</groupId>
     <artifactId>spring-boot-starter-converter</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>spring-boot-starter-converter</name>
@@ -25,9 +25,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.liaochong</groupId>
-            <artifactId>ratel-tools-core</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

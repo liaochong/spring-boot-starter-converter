@@ -23,7 +23,6 @@ import com.github.liaochong.converter.context.ConverterContext;
 import com.github.liaochong.converter.context.Handler;
 import com.github.liaochong.converter.exception.ConvertException;
 import com.github.liaochong.converter.utils.SupplierUtil;
-import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -65,7 +64,7 @@ class BeanConvertStrategy {
      */
     public static <T, U, X extends RuntimeException> U convertBean(T source, Class<U> targetClass,
             Supplier<X> exceptionSupplier) {
-        ObjectValidator.ifNullThrow(targetClass, () -> new NullPointerException("TargetClass can not be null"));
+        Objects.requireNonNull(targetClass,"TargetClass can not be null");
         if (Objects.isNull(source)) {
             return SupplierUtil.ifNonNullThrowOrElse(exceptionSupplier, () -> null);
         }
