@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -38,10 +39,7 @@ import com.github.liaochong.converter.exception.ConverterDisabledException;
 import com.github.liaochong.converter.exception.InvalidConfigurationException;
 import com.github.liaochong.converter.exception.NoConverterException;
 import com.github.liaochong.converter.exception.NonUniqueConverterException;
-import com.github.liaochong.ratel.tools.core.builder.MapBuilder;
-import com.github.liaochong.ratel.tools.core.utils.ClassUtil;
-import com.github.liaochong.ratel.tools.core.validator.BooleanValidator;
-import com.github.liaochong.ratel.tools.core.validator.ObjectValidator;
+import com.github.liaochong.converter.utils.ClassUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class ConverterContext {
 
-    private static final Map<Condition, Handler> ACTION_MAP = MapBuilder.concurrentHashMap();
+    private static final Map<Condition, Handler> ACTION_MAP = new ConcurrentHashMap<>();
 
     /**
      * 是否已经初始化标志
@@ -73,8 +71,10 @@ public final class ConverterContext {
      */
     public static void initialize(ConverterProperties converterProperties, Map<String, Object> converterBeans) {
         // 不允许使用该接口手动初始化
-        BooleanValidator.ifTrueThrow(isInitialized, () -> new UnsupportedOperationException(
-                "It is not allowed to initialize directly with the initialize interface"));
+        if (isInitialized) {
+            throw new UnsupportedOperationException(
+                    "It is not allowed to initialize directly with the initialize interface");
+        }
 
         log.info("Checkout configurations");
         checkProperties(converterProperties);
@@ -89,7 +89,9 @@ public final class ConverterContext {
         }
         // 严格模式下，必须存在转换器
         boolean isStrictFail = converterProperties.isStrictMode() && MapUtils.isEmpty(ACTION_MAP);
-        BooleanValidator.ifTrueThrow(isStrictFail, () -> NoConverterException.of("There is no any converter exist"));
+        if (isStrictFail) {
+            throw NoConverterException.of("There is no any converter exist");
+        }
 
         isInitialized = true;
         log.info("Conversion environment initialization completed");
@@ -102,8 +104,10 @@ public final class ConverterContext {
      */
     private static void checkProperties(ConverterProperties properties) {
         boolean isIllegal = properties.isOnlyScanNonStaticMethod() && properties.isOnlyScanStaticMethod();
-        BooleanValidator.ifTrueThrow(isIllegal, () -> InvalidConfigurationException
-                .of("Only scanning static methods or scanning only non static methods can only select one"));
+        if (isIllegal) {
+            throw InvalidConfigurationException
+                    .of("Only scanning static methods or scanning only non static methods can only select one");
+        }
     }
 
     /**
@@ -205,13 +209,16 @@ public final class ConverterContext {
      * @return handler
      */
     public static Handler getActionHandler(Class<?> sourceClass, Class<?> targetClass) {
-        BooleanValidator.ifTrueThrow(isDisable,
-                () -> ConverterDisabledException.of("@EnableConverter annotation not enabled"));
+        if (isDisable) {
+            throw ConverterDisabledException.of("@EnableConverter annotation not enabled");
+        }
 
         Condition condition = Condition.newInstance(sourceClass, targetClass);
         Handler handler = ACTION_MAP.get(condition);
-        ObjectValidator.ifNullThrow(handler,
-                () -> NoConverterException.of("The conversion method of matching \"" + condition + "\" was not found"));
+
+        if (Objects.isNull(handler)) {
+            throw NoConverterException.of("The conversion method of matching \"" + condition + "\" was not found");
+        }
         return handler;
     }
 
